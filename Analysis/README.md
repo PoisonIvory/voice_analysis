@@ -61,6 +61,17 @@ Recommended handling strategy:
 - Report coverage before analysis (days per source, overlap days, and per-feature sample size `n`).
 - Treat sparse phase windows as exploratory and annotate low-sample results clearly.
 
+## Voice Data Cleaning Rules
+
+Voice data is cleaned before any cross-source alignment:
+
+- Keep only rows where `qc_opensmile_egemaps_success` is true.
+- Drop unreadable or clipped recordings when QC columns are present.
+- Keep recordings with duration in `[1, 120]` seconds.
+- Remove rows where `egemaps_F0semitoneFrom27.5Hz_sma3nz_amean == 0` for `taskType` in `{vowel, prosody}`.
+- Aggregate multiple recordings from the same day to one daily row using median values for voice features.
+- Track per-day recording volume using `voice_recording_count` and `voice_task_count`.
+
 ## Default Inputs
 
 - Voice parquet: `/Users/ivyhamilton/Decibelle/SpeechFeatureExtraction/data/processed/voice_features_v3_recordings.parquet`
@@ -83,6 +94,7 @@ Optional overrides:
 ## Current Behavior
 
 - Loads and validates voice, Oura, and Inito inputs.
+- Applies voice-focused QC filtering and daily aggregation.
 - Pulls Oura directly from Appwrite API.
 - Optionally caches pulled Oura data to `data/raw/oura_daily_summaries.parquet`.
 - Prints date windows for each source.
