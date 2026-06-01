@@ -17,7 +17,7 @@ The extraction pipeline produces two parquet files:
 | `voice_features_v3_recordings.parquet` | One row per successfully extracted recording with metadata and features |
 | `voice_features_v3_audit.parquet` | Full manifest including skipped/failed rows for transparency |
 
-Oura data is now also available as a local immutable snapshot for reproducible analysis:
+Oura data is available as a local immutable snapshot for reproducible analysis:
 
 | File | Purpose |
 |------|---------|
@@ -28,10 +28,33 @@ Oura data is now also available as a local immutable snapshot for reproducible a
 
 Snapshot validation (`2026-06-01`):
 
-- Row count: `304`
+- Row count: `165`
+- Unique days: `165`
 - Columns: `126`
 - Date range: `2025-12-18` to `2026-06-01`
-- Non-null `temperatureDeviation`: `283`
+- Non-null `temperatureDeviation`: `151`
+
+Cycle context is now prepared as a processed source-of-truth table:
+
+| File | Purpose |
+|------|---------|
+| `data/processed/cycle_calendar_daily.parquet` | One row per day with canonical `cycle_day`, binary `phase_label`, and `cycle_week` buckets |
+
+MVP cycle anchors used to generate `cycle_calendar_daily.parquet`:
+
+- `2025-12-18`
+- `2026-01-14`
+- `2026-02-12`
+- `2026-03-09`
+- `2026-04-11`
+- `2026-05-11`
+
+MVP cycle rules:
+
+- `phase_label = luteal` for the last 14 days before the next cycle start
+- `phase_label = follicular` otherwise
+- `cycle_week` is binned by 7-day windows (`week_1`, `week_2`, ...)
+- Hormone `cycle_day` is used as validation, not as source-of-truth override
 
 ## Recordings Parquet Schema
 
@@ -184,10 +207,11 @@ Same columns as recordings parquet plus:
 
 ### 1. Data Preparation
 - Load recordings parquet with pandas/polars
-- Load Oura cycle context from local parquet snapshot by default
+- Generate cycle calendar once: `python -m src.data_collection.export_cycle_calendar --oura-path data/raw/oura_daily_summaries_20260601.parquet --output-path data/processed/cycle_calendar_daily.parquet`
+- Load cycle context from `data/processed/cycle_calendar_daily.parquet`
 - Filter to single user if needed
-- Join with cycle data (from Oura snapshot or manual tracking)
-- Create cycle_day or phase variables
+- Join voice + Oura + hormones to canonical cycle fields by date
+- Use two analysis lenses: binary phase (`follicular`/`luteal`) and `cycle_week`
 
 ### 2. Feature Selection
 - Start with interpretable features: F0, jitter, shimmer, HNR
@@ -235,10 +259,10 @@ data/processed/voice_features_v3_audit.parquet
 
 The analysis project should read these files (copy or reference by path).
 
-## Questions to Consider
+## Open Questions for Next Iteration
 
-1. How will cycle phase be determined? (Oura data? Manual tracking? LH tests?)
-2. What is the expected sample size per cycle phase?
-3. Should analysis be user-specific or aggregated?
-4. What are the primary hypotheses to test?
+1. Should cycle anchors continue to be fixed manual dates, or be auto-extracted from Oura tags each refresh?
+2. Should `phase_label` remain binary in analysis outputs, or should we add ovulatory windows in a follow-up iteration?
+3. What is the expected sample size per phase and per cycle-week bucket after filtering to voice-available dates?
+4. Should analysis be user-specific only, or is group-level aggregation planned later?
 5. What is considered a meaningful effect size for voice features?
