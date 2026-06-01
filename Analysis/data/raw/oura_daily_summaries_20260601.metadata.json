@@ -1,0 +1,12 @@
+{
+  "source": "appwrite_mcp",
+  "table": "oura_daily_summaries",
+  "exported_at_local": "2026-06-01T14:20:48.036026",
+  "row_count": 304,
+  "columns_count": 126,
+  "day_min": "2025-12-18",
+  "day_max": "2026-06-01",
+  "snapshot_file": "data/raw/oura_daily_summaries_20260601.parquet",
+  "latest_file": "data/raw/oura_daily_summaries.parquet",
+  "source_payload_file": "data/raw/oura_daily_summaries_appwrite_result_20260601_full.json"
+}

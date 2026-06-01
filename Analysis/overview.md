@@ -17,6 +17,22 @@ The extraction pipeline produces two parquet files:
 | `voice_features_v3_recordings.parquet` | One row per successfully extracted recording with metadata and features |
 | `voice_features_v3_audit.parquet` | Full manifest including skipped/failed rows for transparency |
 
+Oura data is now also available as a local immutable snapshot for reproducible analysis:
+
+| File | Purpose |
+|------|---------|
+| `data/raw/oura_daily_summaries_20260601.parquet` | Pinned one-time snapshot exported from Appwrite MCP |
+| `data/raw/oura_daily_summaries.parquet` | Latest convenience copy mirroring the pinned snapshot |
+| `data/raw/oura_daily_summaries_20260601.metadata.json` | Snapshot provenance and validation metadata |
+| `data/raw/oura_daily_summaries_appwrite_result_20260601_full.json` | Raw MCP payload for traceability |
+
+Snapshot validation (`2026-06-01`):
+
+- Row count: `304`
+- Columns: `126`
+- Date range: `2025-12-18` to `2026-06-01`
+- Non-null `temperatureDeviation`: `283`
+
 ## Recordings Parquet Schema
 
 ### Identification and Metadata
@@ -168,8 +184,9 @@ Same columns as recordings parquet plus:
 
 ### 1. Data Preparation
 - Load recordings parquet with pandas/polars
+- Load Oura cycle context from local parquet snapshot by default
 - Filter to single user if needed
-- Join with cycle data (from Oura or manual tracking)
+- Join with cycle data (from Oura snapshot or manual tracking)
 - Create cycle_day or phase variables
 
 ### 2. Feature Selection

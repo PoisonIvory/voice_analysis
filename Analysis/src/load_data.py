@@ -5,9 +5,6 @@ from typing import Iterable
 
 import pandas as pd
 
-from .oura_appwrite import AppwriteOuraConfig, fetch_all_oura_documents
-
-
 KEY_VOICE_FEATURES = [
     "egemaps_F0semitoneFrom27.5Hz_sma3nz_amean",
     "egemaps_jitterLocal_sma3nz_amean",
@@ -111,18 +108,9 @@ def _normalize_oura(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def load_oura_from_appwrite(config: AppwriteOuraConfig, cache_path: Path | None = None) -> pd.DataFrame:
-    documents = fetch_all_oura_documents(config)
-    if not documents:
-        raise ValueError("No Oura records returned from Appwrite")
-
-    raw = pd.DataFrame.from_records(documents)
+def load_oura_from_parquet(path: Path) -> pd.DataFrame:
+    raw = pd.read_parquet(path)
     normalized = _normalize_oura(raw)
-
-    if cache_path is not None:
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
-        normalized.to_parquet(cache_path, index=False)
-
     return normalized
 
 

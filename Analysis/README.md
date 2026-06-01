@@ -2,13 +2,28 @@
 
 Setup workspace for the voice-cycle analysis project. This stage validates source datasets and date overlap only.
 
+## Current Readiness
+
+- Status: proceed to analysis using the local Oura snapshot.
+- Snapshot audit date: `2026-06-01`
+- Verified snapshot metrics:
+  - `304` rows
+  - `126` columns
+  - Date range: `2025-12-18` to `2026-06-01`
+  - Non-null `temperatureDeviation`: `283` rows
+- Snapshot files:
+  - `data/raw/oura_daily_summaries_20260601.parquet` (immutable)
+  - `data/raw/oura_daily_summaries.parquet` (latest convenience copy)
+  - `data/raw/oura_daily_summaries_20260601.metadata.json` (provenance)
+  - `data/raw/oura_daily_summaries_appwrite_result_20260601_full.json` (raw traceability payload)
+
 ## Quickstart
 
 1. Create/activate a Python environment.
 2. Install dependencies:
    - `pip install -r requirements.txt`
-3. Run pipeline:
-   - `APPWRITE_API_KEY=xxx python -m src.run_pipeline`
+3. Run pipeline (local snapshot, no Appwrite dependency):
+   - `python -m src.run_pipeline`
 
 ## Data Requirements
 
@@ -37,10 +52,8 @@ This setup pipeline expects three data sources.
 
 ### 3) Oura data (required)
 
-- Source: Appwrite API (`oura_daily_summaries` collection)
-- Auth:
-  - `APPWRITE_API_KEY` is required
-- Required Appwrite document date field:
+- Source: local parquet snapshot
+- Required date field:
   - `day` or `date`
 - Pipeline keeps normalized Oura fields when available:
   - `temperatureDeviation`, `temperatureTrendDeviation`, `averageHrv`, `restingHeartRate`, `sleepScore`, `readinessScore`, `activityScore`, `tags`
@@ -75,28 +88,18 @@ Voice data is cleaned before any cross-source alignment:
 ## Default Inputs
 
 - Voice parquet: `/Users/ivyhamilton/Decibelle/SpeechFeatureExtraction/data/processed/voice_features_v3_recordings.parquet`
-- Oura: pulled from Appwrite `oura_daily_summaries` API collection
+- Oura local snapshot: `data/raw/oura_daily_summaries_20260601.parquet`
 - Inito CSV: `/Users/ivyhamilton/Downloads/Hormone Tracking - hormones_data.csv`
 
 Optional overrides:
 
-`APPWRITE_API_KEY=xxx python -m src.run_pipeline --voice-path /path/to/voice.parquet --inito-path /path/to/inito.csv --oura-cache-path data/raw/oura_daily_summaries.parquet`
-
-## Appwrite Environment Variables
-
-- `APPWRITE_API_KEY` (required)
-- `APPWRITE_USER_ID` (optional, default: `6928d5ab0018cac7ae42`)
-- `APPWRITE_ENDPOINT` (optional, default: `https://sfo.cloud.appwrite.io/v1`)
-- `APPWRITE_PROJECT_ID` (optional, default: `68ca57d1000cb6324eca`)
-- `APPWRITE_DATABASE_ID` (optional, default: `period_tracker_db`)
-- `APPWRITE_OURA_COLLECTION_ID` (optional, default: `oura_daily_summaries`)
+`python -m src.run_pipeline --voice-path /path/to/voice.parquet --inito-path /path/to/inito.csv --oura-path data/raw/oura_daily_summaries_20260601.parquet`
 
 ## Current Behavior
 
 - Loads and validates voice, Oura, and Inito inputs.
 - Applies voice-focused QC filtering and daily aggregation.
-- Pulls Oura directly from Appwrite API.
-- Optionally caches pulled Oura data to `data/raw/oura_daily_summaries.parquet`.
+- Loads Oura directly from local parquet snapshot.
 - Prints date windows for each source.
 - Prints the three-way date overlap count.
 - Does not generate analysis outputs yet.
