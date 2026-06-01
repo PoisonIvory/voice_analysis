@@ -1,6 +1,6 @@
 # Voice-Cycle Analysis
 
-Setup workspace for the voice-cycle analysis project. This stage validates source datasets and date overlap only.
+Setup workspace for the voice-cycle analysis project. This stage validates source datasets, builds a source-of-truth cycle calendar, and reports cycle coverage diagnostics.
 
 ## Current Readiness
 
@@ -22,8 +22,13 @@ Setup workspace for the voice-cycle analysis project. This stage validates sourc
 1. Create/activate a Python environment.
 2. Install dependencies:
    - `pip install -r requirements.txt`
-3. Run pipeline (local snapshot, no Appwrite dependency):
-   - `python -m src.run_pipeline`
+3. Run setup validation (local snapshot, no Appwrite dependency):
+   - `python -m src.analysis.run_setup_validation`
+
+## Code Organization
+
+- `src/analysis/`: analysis-only paths used in the one-time study run.
+- `src/data_collection/`: one-off snapshot refresh tooling.
 
 ## Data Requirements
 
@@ -93,13 +98,68 @@ Voice data is cleaned before any cross-source alignment:
 
 Optional overrides:
 
-`python -m src.run_pipeline --voice-path /path/to/voice.parquet --inito-path /path/to/inito.csv --oura-path data/raw/oura_daily_summaries_20260601.parquet`
+`python -m src.analysis.run_setup_validation --voice-path /path/to/voice.parquet --inito-path /path/to/inito.csv --oura-path data/raw/oura_daily_summaries_20260601.parquet --cycle-calendar-out data/processed/cycle_calendar_daily.parquet`
+
+## Cycle Tracking MVP
+
+The pipeline creates `data/processed/cycle_calendar_daily.parquet` as the single source of truth for cycle-aligned analysis.
+
+MVP cycle starts are anchored to Oura period episodes:
+
+- `2025-12-18`
+- `2026-01-14`
+- `2026-02-12`
+- `2026-03-09`
+- `2026-04-11`
+- `2026-05-11`
+
+Derived fields:
+
+- `cycle_day` = days since cycle start + 1
+- `phase_label`:
+  - `luteal` when `days_to_next_start` is `1-14`
+  - `follicular` otherwise
+- `cycle_week`:
+  - days `1-7` = `week_1`
+  - days `8-14` = `week_2`
+  - days `15-21` = `week_3`
+  - days `22-28` = `week_4`
+  - days `29-35` = `week_5` (and so on for longer cycles)
+
+When hormone data overlaps, the calendar keeps comparison-only diagnostics:
+
+- `hormone_cycle_day`
+- `cycle_day_delta_vs_hormone`
+
+Downstream analysis should use `cycle_day`, `phase_label`, and `cycle_week` from this source-of-truth calendar.
+
+## Refresh Oura Snapshot (Only When Needed)
+
+Use data-collection tooling only when you want a new local snapshot:
+
+`python -m src.data_collection.export_oura_snapshot --snapshot-date 20260601`
+
+Required environment variables for refresh:
+
+- `APPWRITE_API_KEY`
+- `APPWRITE_PROJECT_ID`
+- `APPWRITE_USER_ID`
+
+Optional environment variables:
+
+- `APPWRITE_ENDPOINT` (default: `https://sfo.cloud.appwrite.io/v1`)
+- `APPWRITE_DATABASE_ID` (default: `period_tracker_db`)
+- `APPWRITE_OURA_COLLECTION_ID` (default: `oura_daily_summaries`)
 
 ## Current Behavior
 
 - Loads and validates voice, Oura, and Inito inputs.
 - Applies voice-focused QC filtering and daily aggregation.
 - Loads Oura directly from local parquet snapshot.
-- Prints date windows for each source.
-- Prints the three-way date overlap count.
-- Does not generate analysis outputs yet.
+- Builds `cycle_calendar_daily` as source of truth with:
+  - `cycle_day`
+  - binary `phase_label` (`follicular`/`luteal`)
+  - `cycle_week` buckets (`week_1`, `week_2`, ...)
+- Computes hormone agreement diagnostics on overlap dates.
+- Prints date windows, overlap counts, phase/week distributions, and agreement summary.
+- Writes `data/processed/cycle_calendar_daily.parquet`.

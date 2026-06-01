@@ -1,3 +1,5 @@
+"""Defines default filesystem paths used by analysis entrypoints."""
+
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -15,7 +17,7 @@ class Paths:
 
 
 def default_paths() -> Paths:
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[2]
     return Paths(
         root=root,
         voice_parquet=Path("/Users/ivyhamilton/Decibelle/SpeechFeatureExtraction/data/processed/voice_features_v3_recordings.parquet"),
