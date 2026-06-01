@@ -1,16 +1,17 @@
 # Voice-Cycle Analysis
 
-Setup workspace for the voice-cycle analysis project. This stage validates source datasets, builds a source-of-truth cycle calendar, and reports cycle coverage diagnostics.
+Setup workspace for the voice-cycle analysis project. This stage validates source datasets against a prebuilt source-of-truth cycle calendar and reports cycle coverage diagnostics.
 
 ## Current Readiness
 
 - Status: proceed to analysis using the local Oura snapshot.
 - Snapshot audit date: `2026-06-01`
 - Verified snapshot metrics:
-  - `304` rows
+  - `165` rows
+  - `165` unique days
   - `126` columns
   - Date range: `2025-12-18` to `2026-06-01`
-  - Non-null `temperatureDeviation`: `283` rows
+  - Non-null `temperatureDeviation`: `151` rows
 - Snapshot files:
   - `data/raw/oura_daily_summaries_20260601.parquet` (immutable)
   - `data/raw/oura_daily_summaries.parquet` (latest convenience copy)
@@ -22,7 +23,9 @@ Setup workspace for the voice-cycle analysis project. This stage validates sourc
 1. Create/activate a Python environment.
 2. Install dependencies:
    - `pip install -r requirements.txt`
-3. Run setup validation (local snapshot, no Appwrite dependency):
+3. One-time: export cycle calendar into processed inputs:
+   - `python -m src.data_collection.export_cycle_calendar --oura-path data/raw/oura_daily_summaries_20260601.parquet --output-path data/processed/cycle_calendar_daily.parquet`
+4. Run setup validation (local snapshot, no Appwrite dependency):
    - `python -m src.analysis.run_setup_validation`
 
 ## Code Organization
@@ -98,11 +101,15 @@ Voice data is cleaned before any cross-source alignment:
 
 Optional overrides:
 
-`python -m src.analysis.run_setup_validation --voice-path /path/to/voice.parquet --inito-path /path/to/inito.csv --oura-path data/raw/oura_daily_summaries_20260601.parquet --cycle-calendar-out data/processed/cycle_calendar_daily.parquet`
+`python -m src.analysis.run_setup_validation --voice-path /path/to/voice.parquet --inito-path /path/to/inito.csv --oura-path data/raw/oura_daily_summaries_20260601.parquet --cycle-calendar-path data/processed/cycle_calendar_daily.parquet`
 
 ## Cycle Tracking MVP
 
-The pipeline creates `data/processed/cycle_calendar_daily.parquet` as the single source of truth for cycle-aligned analysis.
+Create the source-of-truth cycle calendar once using data-collection tooling:
+
+`python -m src.data_collection.export_cycle_calendar --oura-path data/raw/oura_daily_summaries_20260601.parquet --output-path data/processed/cycle_calendar_daily.parquet`
+
+The analysis pipeline then consumes `data/processed/cycle_calendar_daily.parquet` as an input dataset.
 
 MVP cycle starts are anchored to Oura period episodes:
 
@@ -154,12 +161,12 @@ Optional environment variables:
 ## Current Behavior
 
 - Loads and validates voice, Oura, and Inito inputs.
+- Loads prebuilt `cycle_calendar_daily` from processed data.
 - Applies voice-focused QC filtering and daily aggregation.
 - Loads Oura directly from local parquet snapshot.
-- Builds `cycle_calendar_daily` as source of truth with:
+- Expects `cycle_calendar_daily` to provide source-of-truth:
   - `cycle_day`
   - binary `phase_label` (`follicular`/`luteal`)
   - `cycle_week` buckets (`week_1`, `week_2`, ...)
 - Computes hormone agreement diagnostics on overlap dates.
 - Prints date windows, overlap counts, phase/week distributions, and agreement summary.
-- Writes `data/processed/cycle_calendar_daily.parquet`.

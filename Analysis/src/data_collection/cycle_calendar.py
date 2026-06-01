@@ -1,4 +1,4 @@
-"""Builds the source-of-truth daily cycle calendar from cycle-start anchors."""
+"""Utilities for building the one-time MVP cycle calendar dataset."""
 
 from __future__ import annotations
 

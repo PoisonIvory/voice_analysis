@@ -8,8 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from .config import default_paths
-from .cycle_calendar import MVP_CYCLE_START_DATES, build_cycle_calendar_daily
-from .load_data import load_inito, load_oura_from_parquet, load_voice_features
+from .load_data import load_cycle_calendar, load_inito, load_oura_from_parquet, load_voice_features
 
 
 def _date_window(df: pd.DataFrame) -> str:
@@ -28,23 +27,6 @@ def _phase_count_line(df: pd.DataFrame, column: str) -> str:
     return ", ".join(parts) if parts else "n/a"
 
 
-def _compute_calendar_range(*frames: pd.DataFrame) -> tuple[pd.Timestamp, pd.Timestamp]:
-    mins: list[pd.Timestamp] = []
-    maxs: list[pd.Timestamp] = []
-    for frame in frames:
-        if "date" not in frame.columns or frame.empty:
-            continue
-        min_date = frame["date"].min()
-        max_date = frame["date"].max()
-        if pd.notna(min_date):
-            mins.append(pd.Timestamp(min_date).normalize())
-        if pd.notna(max_date):
-            maxs.append(pd.Timestamp(max_date).normalize())
-    if not mins or not maxs:
-        raise ValueError("Cannot build cycle calendar without at least one non-empty date series")
-    return min(mins), max(maxs)
-
-
 def _setup_report(
     voice: pd.DataFrame,
     oura: pd.DataFrame,
@@ -54,7 +36,8 @@ def _setup_report(
 ) -> str:
     overlap_dates = set(voice["date"].dropna()) & set(oura["date"].dropna()) & set(inito["date"].dropna())
     overlap_hormone = cycle_calendar[cycle_calendar["hormone_cycle_day"].notna()].copy()
-    cycle_start_str = ", ".join(pd.to_datetime(MVP_CYCLE_START_DATES).strftime("%Y-%m-%d").tolist())
+    cycle_starts = sorted(cycle_calendar["cycle_start_date"].dropna().dt.strftime("%Y-%m-%d").unique().tolist())
+    cycle_start_str = ", ".join(cycle_starts) if cycle_starts else "n/a"
 
     if overlap_hormone.empty:
         hormone_agreement_line = "n/a (no overlap dates)"
@@ -84,17 +67,11 @@ def _setup_report(
     )
 
 
-def run(voice_path: Path, inito_path: Path, oura_path: Path, cycle_calendar_out: Path) -> None:
+def run(voice_path: Path, inito_path: Path, oura_path: Path, cycle_calendar_path: Path) -> None:
     voice = load_voice_features(voice_path)
     oura = load_oura_from_parquet(oura_path)
     inito = load_inito(inito_path)
-
-    calendar_start, calendar_end = _compute_calendar_range(voice, oura, inito)
-    cycle_calendar = build_cycle_calendar_daily(
-        start_dates=MVP_CYCLE_START_DATES,
-        calendar_start=calendar_start,
-        calendar_end=calendar_end,
-    )
+    cycle_calendar = load_cycle_calendar(cycle_calendar_path)
 
     hormone_cycle = inito[["date", "cycle_day"]].rename(columns={"cycle_day": "hormone_cycle_day"})
     cycle_calendar = cycle_calendar.merge(hormone_cycle, on="date", how="left")
@@ -111,11 +88,8 @@ def run(voice_path: Path, inito_path: Path, oura_path: Path, cycle_calendar_out:
         how="left",
     )
 
-    cycle_calendar_out.parent.mkdir(parents=True, exist_ok=True)
-    cycle_calendar.to_parquet(cycle_calendar_out, index=False)
-
     print(_setup_report(voice, oura, inito, cycle_calendar, voice_with_cycle))
-    print(f"- Wrote cycle source-of-truth table: {cycle_calendar_out}")
+    print(f"- Cycle source-of-truth table: {cycle_calendar_path}")
 
 
 def main() -> None:
@@ -130,14 +104,14 @@ def main() -> None:
         help="Local Oura parquet snapshot path",
     )
     parser.add_argument(
-        "--cycle-calendar-out",
+        "--cycle-calendar-path",
         type=Path,
-        default=defaults.processed_dir / "cycle_calendar_daily.parquet",
-        help="Output parquet path for source-of-truth cycle calendar",
+        default=defaults.cycle_calendar_parquet,
+        help="Input parquet path for source-of-truth cycle calendar",
     )
     args = parser.parse_args()
 
-    run(args.voice_path, args.inito_path, args.oura_path, args.cycle_calendar_out)
+    run(args.voice_path, args.inito_path, args.oura_path, args.cycle_calendar_path)
 
 
 if __name__ == "__main__":

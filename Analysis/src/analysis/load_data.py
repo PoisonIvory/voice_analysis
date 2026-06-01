@@ -117,6 +117,38 @@ def load_oura_from_parquet(path: Path) -> pd.DataFrame:
     return normalized
 
 
+def load_cycle_calendar(path: Path) -> pd.DataFrame:
+    df = pd.read_parquet(path)
+    _assert_columns(
+        df,
+        [
+            "date",
+            "cycle_start_date",
+            "next_cycle_start_date",
+            "cycle_day",
+            "cycle_week",
+            "phase_label",
+            "days_to_next_start",
+            "cycle_source",
+        ],
+        "cycle calendar",
+    )
+
+    out = df.copy()
+    out["date"] = pd.to_datetime(out["date"], format="mixed", errors="coerce").dt.normalize()
+    out["cycle_start_date"] = pd.to_datetime(out["cycle_start_date"], format="mixed", errors="coerce").dt.normalize()
+    out["next_cycle_start_date"] = pd.to_datetime(
+        out["next_cycle_start_date"], format="mixed", errors="coerce"
+    ).dt.normalize()
+    out["cycle_day"] = pd.to_numeric(out["cycle_day"], errors="coerce").astype("Int64")
+    out["days_to_next_start"] = pd.to_numeric(out["days_to_next_start"], errors="coerce").astype("Int64")
+    out["phase_label"] = out["phase_label"].astype("string")
+    out["cycle_week"] = out["cycle_week"].astype("string")
+    out["cycle_source"] = out["cycle_source"].astype("string")
+    out = out[out["date"].notna()].sort_values("date").drop_duplicates(subset=["date"], keep="last")
+    return out
+
+
 def load_inito(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path)
     _assert_columns(df, ["Date", "Cycle Day"], "inito")
