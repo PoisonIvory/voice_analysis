@@ -38,10 +38,12 @@ def load_voice_features(path: Path) -> pd.DataFrame:
 
 
 def load_oura(path: Path) -> pd.DataFrame:
-    df = pd.read_csv(path)
-    _assert_columns(df, ["day"], "oura")
+    df = pd.read_parquet(path)
+    if "day" not in df.columns and "date" not in df.columns:
+        raise ValueError("oura is missing required columns: ['day' or 'date']")
 
-    df["date"] = pd.to_datetime(df["day"], format="mixed", errors="coerce").dt.normalize()
+    date_source_col = "day" if "day" in df.columns else "date"
+    df["date"] = pd.to_datetime(df[date_source_col], format="mixed", errors="coerce").dt.normalize()
     df = df[df["date"].notna()].copy()
 
     candidate_cols = [

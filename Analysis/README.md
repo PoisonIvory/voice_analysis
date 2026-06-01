@@ -1,6 +1,6 @@
 # Voice-Cycle Analysis
 
-Analysis pipeline for triangulating voice features, Oura biometrics, and Inito hormones to study cycle-linked voice changes.
+Setup workspace for the voice-cycle analysis project. This stage validates source datasets and date overlap only.
 
 ## Quickstart
 
@@ -13,19 +13,16 @@ Analysis pipeline for triangulating voice features, Oura biometrics, and Inito h
 ## Default Inputs
 
 - Voice parquet: `/Users/ivyhamilton/Decibelle/SpeechFeatureExtraction/data/processed/voice_features_v3_recordings.parquet`
-- Oura CSV: `/Users/ivyhamilton/Decibelle/PeriodTracker/oura_full_2026-01-17.csv`
+- Oura parquet: `data/raw/oura_daily_summaries.parquet`
 - Inito CSV: `/Users/ivyhamilton/Downloads/Hormone Tracking - hormones_data.csv`
 
 Override any path:
 
-`python -m src.run_pipeline --voice-path /path/to/voice.parquet --oura-path /path/to/oura.csv --inito-path /path/to/inito.csv`
+`python -m src.run_pipeline --voice-path /path/to/voice.parquet --oura-path /path/to/oura.parquet --inito-path /path/to/inito.csv`
 
-## Outputs
+## Current Behavior
 
-- `data/processed/aligned_daily.parquet`
-- `data/processed/aligned_daily_cycle_window.csv`
-- `data/processed/phase_summary.csv`
-- `data/processed/phase_kruskal.csv`
-- `data/processed/hormone_correlations.csv`
-- `outputs/figures/*.png`
-- `outputs/presentation_summary.md`
+- Loads and validates voice, Oura, and Inito inputs.
+- Prints date windows for each source.
+- Prints the three-way date overlap count.
+- Does not generate analysis outputs yet.

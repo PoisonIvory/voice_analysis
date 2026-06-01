@@ -6,7 +6,7 @@ from pathlib import Path
 class Paths:
     root: Path
     voice_parquet: Path
-    oura_csv: Path
+    oura_parquet: Path
     inito_csv: Path
     processed_dir: Path
     outputs_dir: Path
@@ -18,7 +18,7 @@ def default_paths() -> Paths:
     return Paths(
         root=root,
         voice_parquet=Path("/Users/ivyhamilton/Decibelle/SpeechFeatureExtraction/data/processed/voice_features_v3_recordings.parquet"),
-        oura_csv=Path("/Users/ivyhamilton/Decibelle/PeriodTracker/oura_full_2026-01-17.csv"),
+        oura_parquet=root / "data" / "raw" / "oura_daily_summaries.parquet",
         inito_csv=Path("/Users/ivyhamilton/Downloads/Hormone Tracking - hormones_data.csv"),
         processed_dir=root / "data" / "processed",
         outputs_dir=root / "outputs",
