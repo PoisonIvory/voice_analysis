@@ -5,6 +5,8 @@ from typing import Iterable
 
 import pandas as pd
 
+from .oura_appwrite import AppwriteOuraConfig, fetch_all_oura_documents
+
 
 KEY_VOICE_FEATURES = [
     "egemaps_F0semitoneFrom27.5Hz_sma3nz_amean",
@@ -37,8 +39,7 @@ def load_voice_features(path: Path) -> pd.DataFrame:
     return df[keep_cols].copy()
 
 
-def load_oura(path: Path) -> pd.DataFrame:
-    df = pd.read_parquet(path)
+def _normalize_oura(df: pd.DataFrame) -> pd.DataFrame:
     if "day" not in df.columns and "date" not in df.columns:
         raise ValueError("oura is missing required columns: ['day' or 'date']")
 
@@ -63,6 +64,21 @@ def load_oura(path: Path) -> pd.DataFrame:
     if "tags" in out.columns:
         out["tags"] = out["tags"].fillna("").astype(str)
     return out
+
+
+def load_oura_from_appwrite(config: AppwriteOuraConfig, cache_path: Path | None = None) -> pd.DataFrame:
+    documents = fetch_all_oura_documents(config)
+    if not documents:
+        raise ValueError("No Oura records returned from Appwrite")
+
+    raw = pd.DataFrame.from_records(documents)
+    normalized = _normalize_oura(raw)
+
+    if cache_path is not None:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        normalized.to_parquet(cache_path, index=False)
+
+    return normalized
 
 
 def load_inito(path: Path) -> pd.DataFrame:

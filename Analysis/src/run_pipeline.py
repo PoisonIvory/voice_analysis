@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config import default_paths
-from .load_data import load_inito, load_oura, load_voice_features
+from .config import appwrite_oura_config_from_env, default_paths
+from .load_data import load_inito, load_oura_from_appwrite, load_voice_features
 
 
 def _date_window(df: pd.DataFrame) -> str:
@@ -28,9 +28,12 @@ def _setup_report(voice: pd.DataFrame, oura: pd.DataFrame, inito: pd.DataFrame) 
     )
 
 
-def run(voice_path: Path, oura_path: Path, inito_path: Path) -> None:
+def run(voice_path: Path, inito_path: Path, oura_cache_path: Path | None) -> None:
     voice = load_voice_features(voice_path)
-    oura = load_oura(oura_path)
+    oura = load_oura_from_appwrite(
+        config=appwrite_oura_config_from_env(),
+        cache_path=oura_cache_path,
+    )
     inito = load_inito(inito_path)
     print(_setup_report(voice, oura, inito))
 
@@ -39,11 +42,22 @@ def main() -> None:
     defaults = default_paths()
     parser = argparse.ArgumentParser(description="Run setup validation for voice-cycle analysis.")
     parser.add_argument("--voice-path", type=Path, default=defaults.voice_parquet)
-    parser.add_argument("--oura-path", type=Path, default=defaults.oura_parquet)
     parser.add_argument("--inito-path", type=Path, default=defaults.inito_csv)
+    parser.add_argument(
+        "--oura-cache-path",
+        type=Path,
+        default=defaults.oura_cache_parquet,
+        help="Optional parquet destination for Appwrite Oura pull",
+    )
+    parser.add_argument(
+        "--no-oura-cache",
+        action="store_true",
+        help="Disable writing pulled Oura data to local parquet cache",
+    )
     args = parser.parse_args()
 
-    run(args.voice_path, args.oura_path, args.inito_path)
+    oura_cache_path = None if args.no_oura_cache else args.oura_cache_path
+    run(args.voice_path, args.inito_path, oura_cache_path)
 
 
 if __name__ == "__main__":
