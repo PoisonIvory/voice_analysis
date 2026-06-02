@@ -8,15 +8,7 @@ from typing import Iterable
 import pandas as pd
 
 
-KEY_VOICE_FEATURES = [
-    "egemaps_F0semitoneFrom27.5Hz_sma3nz_amean",
-    "egemaps_jitterLocal_sma3nz_amean",
-    "egemaps_shimmerLocaldB_sma3nz_amean",
-    "egemaps_HNRdBACF_sma3nz_amean",
-    "egemaps_F1frequency_sma3nz_amean",
-    "egemaps_F2frequency_sma3nz_amean",
-    "egemaps_F3frequency_sma3nz_amean",
-]
+VOICE_FEATURE_PREFIX = "egemaps_"
 
 VOICE_MIN_DURATION_SEC = 1.0
 VOICE_MAX_DURATION_SEC = 120.0
@@ -52,7 +44,7 @@ def _apply_voice_quality_filters(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _aggregate_voice_daily(df: pd.DataFrame) -> pd.DataFrame:
-    feature_columns = [c for c in KEY_VOICE_FEATURES if c in df.columns]
+    feature_columns = [c for c in df.columns if c.startswith(VOICE_FEATURE_PREFIX)]
     aggregate_spec: dict[str, tuple[str, str]] = {
         "voice_recording_count": ("date", "size"),
         "voice_task_count": ("taskType", "nunique"),
@@ -80,8 +72,36 @@ def load_voice_features(path: Path) -> pd.DataFrame:
     df = df[df["qc_opensmile_egemaps_success"] == True].copy()  # noqa: E712
     df = _apply_voice_quality_filters(df)
 
-    keep_cols = ["date", "taskType", "qc_duration_sec"] + [c for c in KEY_VOICE_FEATURES if c in df.columns]
+    keep_cols = ["date", "taskType", "qc_duration_sec"] + [
+        c for c in df.columns if c.startswith(VOICE_FEATURE_PREFIX)
+    ]
     return _aggregate_voice_daily(df[keep_cols].copy())
+
+
+def load_voice_daily_handoff(path: Path, expected_user_id: str | None = None) -> pd.DataFrame:
+    df = pd.read_parquet(path).copy()
+    _assert_columns(df, ["userId", "dayUtc"], "voice v4 daily handoff")
+
+    out = df.copy()
+    out["date"] = pd.to_datetime(out["dayUtc"], format="mixed", errors="coerce").dt.normalize()
+    out = out[out["date"].notna()].copy()
+    out["userId"] = out["userId"].astype(str)
+    out = out.sort_values(["userId", "date"]).reset_index(drop=True)
+
+    unique_users = sorted(out["userId"].dropna().unique().tolist())
+    if len(unique_users) != 1:
+        raise ValueError(f"voice v4 daily handoff must contain exactly one userId; found {len(unique_users)}")
+
+    if expected_user_id is not None and unique_users[0] != expected_user_id:
+        raise ValueError(
+            f"voice v4 daily handoff userId mismatch: expected {expected_user_id}, found {unique_users[0]}"
+        )
+
+    duplicate_rows = int(out.duplicated(subset=["userId", "date"], keep=False).sum())
+    if duplicate_rows > 0:
+        raise ValueError(f"voice v4 daily handoff has duplicate (userId, dayUtc) rows: {duplicate_rows}")
+
+    return out
 
 
 def _normalize_oura(df: pd.DataFrame) -> pd.DataFrame:
@@ -92,22 +112,7 @@ def _normalize_oura(df: pd.DataFrame) -> pd.DataFrame:
     df["date"] = pd.to_datetime(df[date_source_col], format="mixed", errors="coerce").dt.normalize()
     df = df[df["date"].notna()].copy()
 
-    candidate_cols = [
-        "date",
-        "temperatureDeviation",
-        "temperatureTrendDeviation",
-        "averageHrv",
-        "restingHeartRate",
-        "sleepScore",
-        "readinessScore",
-        "activityScore",
-        "tags",
-    ]
-    present_cols = [c for c in candidate_cols if c in df.columns]
-    out = df[present_cols].copy()
-
-    if "tags" in out.columns:
-        out["tags"] = out["tags"].fillna("").astype(str)
+    out = df.copy()
     return out
 
 
