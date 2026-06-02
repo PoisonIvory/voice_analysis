@@ -39,6 +39,16 @@ def main() -> None:
         default=defaults.outputs_dir / "phase2_hormone_linkage_report.md",
     )
     parser.add_argument(
+        "--hormone-daily-levels-output-path",
+        type=Path,
+        default=defaults.processed_dir / "hormone_daily_levels.parquet",
+    )
+    parser.add_argument(
+        "--hormone-daily-with-rate-output-path",
+        type=Path,
+        default=defaults.processed_dir / "hormone_daily_with_rate.parquet",
+    )
+    parser.add_argument(
         "--candidate-feature",
         action="append",
         dest="candidate_features",
@@ -87,6 +97,8 @@ def main() -> None:
         artifacts=Phase2Artifacts(
             lag_scan_output_path=args.lag_scan_output_path,
             summary_report_path=args.summary_report_path,
+            hormone_daily_levels_output_path=args.hormone_daily_levels_output_path,
+            hormone_daily_with_rate_output_path=args.hormone_daily_with_rate_output_path,
         ),
         candidate_features=candidate_features,
         hormone_columns=hormone_columns,
@@ -97,6 +109,8 @@ def main() -> None:
 
     print(f"Wrote: {args.lag_scan_output_path}")
     print(f"Wrote: {args.summary_report_path}")
+    print(f"Wrote: {args.hormone_daily_levels_output_path}")
+    print(f"Wrote: {args.hormone_daily_with_rate_output_path}")
 
 
 if __name__ == "__main__":
