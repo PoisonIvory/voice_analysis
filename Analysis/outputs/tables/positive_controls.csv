@@ -1,7 +1,0 @@
-variable,n_follicular,n_luteal,median_follicular,median_luteal,luteal_minus_follicular,cliffs_delta,magnitude,mann_whitney_p,cycles_consistent,cycles_total
-Body temperature deviation,78,63,-0.04,0.18,0.22,0.5816035816035816,large,3.1143575047345862e-09,5,5
-Heart-rate variability (HRV),74,54,28.5,24.0,-4.5,-0.25725725725725723,small,0.013149574330088376,4,5
-Daytime average heart rate,74,54,71.75,74.3125,2.5625,0.3893893893893894,medium,0.00017545494398201727,5,5
-Resting heart rate,78,63,86.5,68.0,-18.5,-0.2987382987382987,small,0.002320213862000316,5,5
-Respiration rate,74,54,18.75,19.0,0.25,0.24524524524524524,small,0.01796603725911899,2,5
-Sleep score,78,63,76.0,74.0,-2.0,-0.12047212047212047,negligible,0.2200958195178957,4,5
