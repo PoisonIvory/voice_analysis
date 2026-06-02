@@ -355,6 +355,54 @@ def fig_headline(df: pd.DataFrame, out: Path) -> Path:
     return out
 
 
+def fig_robustness(results: dict, out: Path) -> Path:
+    _style()
+    rob = results["robustness"]
+    coupling = results["hormone_coupling"]
+    fig, axes = plt.subplots(1, 2, figsize=(13, 4.8))
+
+    # Panel A: in-window (measured PdG) vs held-out (temperature proxy, drift-controlled)
+    y = np.arange(len(rob))[::-1]
+    axes[0].barh(y + 0.2, rob["in_window_rho_pdg"], height=0.38, color=FOLLICULAR,
+                 label="In-window vs measured PdG")
+    axes[0].barh(y - 0.2, rob["heldout_rho_temp_datectrl"], height=0.38, color="#C7657A",
+                 label="Held-out vs temp proxy (drift-controlled)")
+    axes[0].axvline(0, color=INK, lw=0.8)
+    axes[0].set_yticks(y)
+    axes[0].set_yticklabels(rob["feature"], fontsize=8)
+    axes[0].set_xlabel("Spearman rho")
+    axes[0].set_title("Candidate signals do not replicate out-of-sample", fontsize=11)
+    axes[0].legend(fontsize=8, loc="lower right")
+    axes[0].grid(axis="y", visible=False)
+
+    # Panel B: FDR q-values for the candidate couplings (vs measured PdG)
+    from . import study_results as sr
+    labels, qvals = [], []
+    for name, task, base in sr.CANDIDATES:
+        row = coupling[(coupling["base"] == base) & (coupling["task"] == task)
+                       & (coupling["hormone"] == "Progesterone (PdG)")]
+        if len(row):
+            labels.append(name)
+            qvals.append(float(row["fdr_q"].iloc[0]))
+    yb = np.arange(len(labels))[::-1]
+    axes[1].barh(yb, qvals, color="#8895A7")
+    axes[1].axvline(0.05, color="#C7657A", ls="--", lw=1.2, label="q = 0.05")
+    axes[1].axvline(0.10, color=ESTROGEN, ls=":", lw=1.2, label="q = 0.10")
+    axes[1].set_yticks(yb)
+    axes[1].set_yticklabels(labels, fontsize=8)
+    axes[1].set_xlabel("FDR-adjusted q-value (vs measured PdG)")
+    axes[1].set_title("None survive multiple-comparison correction", fontsize=11)
+    axes[1].legend(fontsize=8, loc="lower right")
+    axes[1].grid(axis="y", visible=False)
+
+    fig.suptitle("Robustness checks: the voice signal does not hold up",
+                 fontsize=13, fontweight="bold")
+    fig.tight_layout(rect=(0, 0, 1, 0.93))
+    fig.savefig(out, bbox_inches="tight")
+    plt.close(fig)
+    return out
+
+
 def render_all(results: dict, figures_dir: Path) -> dict[str, Path]:
     figures_dir.mkdir(parents=True, exist_ok=True)
     df = results["analysis_table"]
@@ -368,6 +416,7 @@ def render_all(results: dict, figures_dir: Path) -> dict[str, Path]:
         "task": fig_task_dissociation(coupling, figures_dir / "fig06_task_dissociation.png"),
         "mfcc": fig_mfcc(df, coupling, figures_dir / "fig07_mfcc.png"),
         "headline": fig_headline(df, figures_dir / "fig08_headline_hnr.png"),
+        "robustness": fig_robustness(results, figures_dir / "fig09_robustness.png"),
     }
     return paths
 
