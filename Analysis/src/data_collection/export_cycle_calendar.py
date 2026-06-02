@@ -7,7 +7,45 @@ from pathlib import Path
 
 import pandas as pd
 
-from .cycle_calendar import MVP_CYCLE_START_DATES, build_cycle_calendar_daily
+from .cycle_calendar import (
+    MVP_CYCLE_START_DATES,
+    PERIOD_START_GAP_DAYS,
+    build_cycle_calendar_daily,
+    period_anchors_from_oura,
+)
+
+
+def _merge_anchors(derived: list[str], manual: list[str], gap_days: int) -> list[str]:
+    """Merge derived (Oura) and manual anchors, collapsing near-duplicate bleeds.
+
+    Two starts within `gap_days` are the same cycle; when that happens the
+    Oura-derived date wins (sensor source of truth), so manual dates only add
+    genuinely new cycles rather than perturbing already-validated anchors.
+    """
+    derived_set = {pd.Timestamp(d).normalize() for d in derived}
+    all_dates = sorted(derived_set | {pd.Timestamp(d).normalize() for d in manual})
+    kept: list[pd.Timestamp] = []
+    for day in all_dates:
+        if kept and (day - kept[-1]).days <= gap_days:
+            if day in derived_set and kept[-1] not in derived_set:
+                kept[-1] = day
+            continue
+        kept.append(day)
+    return [d.date().isoformat() for d in kept]
+
+
+def _resolve_anchors(oura_path: Path, extra_start_dates: list[str]) -> list[str]:
+    """Period-start anchors from Oura tags, merged with any manual pre-sync dates.
+
+    Oura tags are the source of truth; manual dates cover cycles that predate the
+    Oura sync window (where the user logged periods in the app but no Oura record
+    exists locally). Falls back to the frozen MVP list if Oura yields nothing.
+    """
+    oura = pd.read_parquet(oura_path)
+    derived = [ts.date().isoformat() for ts in period_anchors_from_oura(oura)]
+    if not derived:
+        derived = list(MVP_CYCLE_START_DATES)
+    return _merge_anchors(derived, extra_start_dates, PERIOD_START_GAP_DAYS)
 
 
 def _resolve_date_window(
@@ -49,10 +87,16 @@ def export_cycle_calendar(
     oura_path: Path,
     start_date: str | None,
     end_date: str | None,
+    extra_start_dates: list[str] | None = None,
 ) -> None:
+    anchors = _resolve_anchors(oura_path, extra_start_dates or [])
     calendar_start, calendar_end = _resolve_date_window(oura_path, start_date, end_date)
+    # Cover the full span from the earliest period start so cycles that predate the
+    # Oura sync window still produce labeled days for voice recordings made then.
+    earliest_anchor = pd.Timestamp(anchors[0]).normalize()
+    calendar_start = min(calendar_start, earliest_anchor)
     cycle_calendar = build_cycle_calendar_daily(
-        start_dates=MVP_CYCLE_START_DATES,
+        start_dates=anchors,
         calendar_start=calendar_start,
         calendar_end=calendar_end,
     )
@@ -65,7 +109,7 @@ def export_cycle_calendar(
     print(f"- Output: {output_path}")
     print(f"- Date window: {calendar_start.date()} to {calendar_end.date()}")
     print(f"- Rows: {len(cycle_calendar)}")
-    print(f"- Cycle starts: {', '.join(MVP_CYCLE_START_DATES)}")
+    print(f"- Cycle starts: {', '.join(anchors)}")
     print(f"- Phase counts: {phase_counts}")
     print(f"- Week counts: {week_counts}")
 
@@ -87,9 +131,16 @@ def main() -> None:
     )
     parser.add_argument("--start-date", type=str, default=None, help="Optional inclusive start date YYYY-MM-DD")
     parser.add_argument("--end-date", type=str, default=None, help="Optional inclusive end date YYYY-MM-DD")
+    parser.add_argument(
+        "--extra-start-dates",
+        type=str,
+        default=None,
+        help="Comma-separated period-start dates (YYYY-MM-DD) for cycles predating the Oura sync window",
+    )
     args = parser.parse_args()
 
-    export_cycle_calendar(args.output_path, args.oura_path, args.start_date, args.end_date)
+    extra = [d.strip() for d in args.extra_start_dates.split(",")] if args.extra_start_dates else []
+    export_cycle_calendar(args.output_path, args.oura_path, args.start_date, args.end_date, extra)
 
 
 if __name__ == "__main__":

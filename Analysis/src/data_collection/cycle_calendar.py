@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 
 import pandas as pd
@@ -15,6 +16,51 @@ MVP_CYCLE_START_DATES: tuple[str, ...] = (
     "2026-04-11",
     "2026-05-11",
 )
+
+# Oura tag emitted on logged menstruation days.
+OURA_PERIOD_TAG = "tag_generic_period"
+# Consecutive period days within this gap belong to one bleed, not a new cycle.
+PERIOD_START_GAP_DAYS = 3
+# In an open (still-running) final cycle we cannot apply the last-14-days luteal
+# rule, but the first days of a cycle are menstruation/early-follicular regardless
+# of cycle length, so they are safe to label.
+OPEN_CYCLE_FOLLICULAR_MAX_DAY = 7
+
+
+def _row_has_period_tag(value: object) -> bool:
+    if isinstance(value, (list, tuple)):
+        tags = value
+    elif isinstance(value, str):
+        try:
+            tags = json.loads(value)
+        except (ValueError, TypeError):
+            return False
+    else:
+        return False
+    return OURA_PERIOD_TAG in tags
+
+
+def period_anchors_from_oura(
+    oura: pd.DataFrame, gap_days: int = PERIOD_START_GAP_DAYS
+) -> list[pd.Timestamp]:
+    """Derive cycle-start anchors from Oura period tags (the source of truth).
+
+    A start is the first day of a run of period days; days within `gap_days` of
+    the previous period day are treated as the same bleed.
+    """
+    day_col = "day" if "day" in oura.columns else "date" if "date" in oura.columns else None
+    if day_col is None or "tags" not in oura.columns:
+        return []
+    days = pd.to_datetime(oura[day_col], format="mixed", errors="coerce")
+    period_days = sorted(
+        days[oura["tags"].map(_row_has_period_tag)].dropna().dt.normalize().unique()
+    )
+    anchors: list[pd.Timestamp] = []
+    for raw in period_days:
+        day = pd.Timestamp(raw)
+        if not anchors or (day - anchors[-1]).days > gap_days:
+            anchors.append(day)
+    return anchors
 
 
 def _normalize_start_dates(start_dates: Sequence[str | pd.Timestamp]) -> list[pd.Timestamp]:
@@ -92,6 +138,12 @@ def build_cycle_calendar_daily(
     known_cycle_mask = out["days_to_next_start"].notna()
     out.loc[known_cycle_mask, "phase_label"] = "follicular"
     out.loc[luteal_mask, "phase_label"] = "luteal"
+
+    # Open final cycle (no next start yet): label only the early, unambiguously
+    # follicular days; later days stay unlabeled until the next period is known.
+    open_cycle_mask = out["next_cycle_start_date"].isna()
+    open_follicular_mask = open_cycle_mask & out["cycle_day"].le(OPEN_CYCLE_FOLLICULAR_MAX_DAY)
+    out.loc[open_follicular_mask, "phase_label"] = "follicular"
     out["phase_label"] = out["phase_label"].astype("string")
     out["cycle_week"] = _cycle_week_label(out["cycle_day"]).astype("string")
 

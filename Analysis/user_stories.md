@@ -1,6 +1,6 @@
 ## Voice-Cycle Analysis User Story
 
-As a researcher tracking my own biometrics, I want to analyze how my voice changes across my menstrual cycle by combining extracted voice features, Oura metrics, and Inito hormone data, so that I can present clear, evidence-based findings to a Northeastern professor on Wednesday.
+As a researcher tracking my own biometrics, I want to analyze how my voice changes across my menstrual cycle by combining extracted voice features, Oura metrics, and Inito hormone data, so that I can present clear, evidence-based findings to a Northeastern professor on Wednesday. The goal is to present insights through a meaningful data story, backed by existing research and potential physiological mechanisms.
 
 ### Acceptance Criteria
 
