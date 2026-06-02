@@ -1,0 +1,5 @@
+contrast,feature,rationale,n_follicular_days,n_luteal_days,cliffs_delta_phase,magnitude,balanced_cycle_signs,cross_cycle_consistent,pdg_n,pdg_raw_rho,pdg_partial_rho
+voiced_minus_voiceless_mfcc2,segment_mfcc2_mean,Phonatory vs aperiodic timbre; literature reports an enhanced voiced/voiceless contrast in the high-hormone phase (VOT/plosive work).,30,22,0.1,negligible,"[1, 1]",True,29,0.541,0.508
+highvowel_minus_lowvowel_h1h2,segment_h1h2_mean,Open-quotient difference between high and low vowels; a self-normalizing breathiness contrast independent of recording gain.,30,22,0.258,small,"[1, 1]",True,29,0.067,-0.002
+nasaladj_minus_oral_h1h2,segment_h1h2_mean,"Nasal coupling probe; congestion/edema is reported to raise nasalance premenstrually, which should widen this contrast.",30,22,-0.167,small,"[-1, -1]",True,29,0.019,0.068
+sonorant_minus_obstruent_mfcc2,segment_mfcc2_mean,Broad-class timbre contrast; sonorants carry sustained phonation where mucosal-cover effects should concentrate.,30,22,-0.024,negligible,"[1, -1]",False,29,0.35,0.29

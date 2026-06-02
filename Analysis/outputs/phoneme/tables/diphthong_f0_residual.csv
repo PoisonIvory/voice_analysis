@@ -1,0 +1,7 @@
+phoneme_class,n_follicular_days,n_luteal_days,cliffs_delta_resid_demeaned,magnitude
+vowel,30,22,0.064,negligible
+diphthong,30,22,0.364,medium
+nasal,30,22,0.021,negligible
+approximant,30,22,-0.094,negligible
+stop,30,22,0.03,negligible
+fricative,30,22,-0.073,negligible

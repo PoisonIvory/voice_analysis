@@ -1,0 +1,5 @@
+feature_set,n_features,n_days,balanced_accuracy,chance,p_value
+phoneme_profile,10,33,0.877,0.496,0.0002
+global_means_only,2,33,0.846,0.496,0.0004
+h1h2_voiced_manner_profile,4,33,0.607,0.498,0.1732
+mfcc2_manner_profile,6,33,0.787,0.494,0.0006

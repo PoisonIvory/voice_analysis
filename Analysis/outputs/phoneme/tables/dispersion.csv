@@ -1,0 +1,2 @@
+quantity,n_follicular_days,n_luteal_days,cliffs_delta_phase,magnitude,balanced_cycle_signs,cross_cycle_consistent,pdg_n,pdg_raw_rho,pdg_partial_rho
+within_recording_sd_vowel_segment_h1h2_mean,30,22,-0.248,small,"[-1, -1]",True,29,-0.212,-0.161
