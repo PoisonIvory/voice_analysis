@@ -197,5 +197,5 @@ if __name__ == "__main__":
 
     pd.DataFrame([summary.__dict__]).to_json(paths.outputs_dir / "tables" / "vowel_drift_summary.json",
                                              indent=2)
-    p = fig_vowel_drift(data, summary, paths.figures_dir / "fig11_vowel_drift.png")
+    p = fig_vowel_drift(data, summary, paths.figures_dir / "fig12_vowel_drift.png")
     print("figure:", p)

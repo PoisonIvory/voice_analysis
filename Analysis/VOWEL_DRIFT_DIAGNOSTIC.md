@@ -15,7 +15,7 @@
 - **The result:** the vowel change is **real but early** - a clean regime shift in F1/F2/F3 that a changepoint scan dates to **~26 November 2025**. Only **2 phase-labeled days** fall before that settle date (both in lopsided early cycles that the phase analysis excludes anyway), and **0** hormone days do. Inside the hormone window (Jan 22 - Mar 25) the **formants are flat** (F1 rho -0.15, F2 +0.06, F3 +0.13, all n.s.) while **F0 drifts hard** (rho **-0.78**). Controlling F0 for the formants does **nothing** (F0~date -0.40 -> -0.35; F0~estrogen +0.53 -> +0.60). Only controlling for **time** removes it (F0~estrogen +0.53 -> **+0.09**).
 - **Conclusion:** the vowel change is a **red herring** for the cycle result. It settled before the hormones were measured, and the F0 drift is independent of it. The main report's date-control is the correct fix; formant-residualization would not have helped (and would have slightly *strengthened* the spurious pitch-estrogen link).
 
-![Vowel-change diagnostic](outputs/figures/fig11_vowel_drift.png)
+![Vowel-change diagnostic](outputs/figures/fig12_vowel_drift.png)
 
 ---
 
@@ -105,4 +105,4 @@ python -m src.analysis.vowel_drift
 - Diagnostic (computation + figure): `src/analysis/vowel_drift.py`
 - Residualization helper (shared): `src/analysis/residualize.py`
 - Summary table: `outputs/tables/vowel_drift_summary.json`
-- Figure: `outputs/figures/fig11_vowel_drift.png`
+- Figure: `outputs/figures/fig12_vowel_drift.png`
