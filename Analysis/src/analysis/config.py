@@ -21,7 +21,7 @@ def default_paths() -> Paths:
     root = Path(__file__).resolve().parents[2]
     return Paths(
         root=root,
-        voice_parquet=Path("/Users/ivyhamilton/Decibelle/SpeechFeatureExtraction/data/processed/voice_features_v3_recordings.parquet"),
+        voice_parquet=Path("/Users/ivyhamilton/Decibelle/SpeechFeatureExtraction/data/processed/voice_features_v4_recordings_staging.parquet"),
         oura_parquet=root / "data" / "raw" / "oura_daily_summaries_20260601.parquet",
         cycle_calendar_parquet=root / "data" / "processed" / "cycle_calendar_daily.parquet",
         inito_csv=Path("/Users/ivyhamilton/Downloads/Hormone Tracking - hormones_data.csv"),
