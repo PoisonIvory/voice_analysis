@@ -1,0 +1,5 @@
+pdg_rate_group,dispersion_iqr_z,n_days_median,channel
+fast,1.265812046873929,14,cover
+slow,1.1412262528029251,11,cover
+fast,0.8400205063788976,14,geometry
+slow,1.372655617263095,11,geometry

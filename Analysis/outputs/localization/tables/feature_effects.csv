@@ -1,0 +1,61 @@
+family,family_label,feature,label,task,cliffs_delta,magnitude,n_days
+peripheral_cover,Cover quality (mucosa/closure),egemaps_HNRdBACF_sma3nz_amean,Clarity (HNR),prosody,0.5882352941176471,large,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_jitterLocal_sma3nz_amean,Jitter,prosody,0.058823529411764705,negligible,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_shimmerLocaldB_sma3nz_amean,Shimmer,prosody,-0.36764705882352944,medium,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_alphaRatioV_sma3nz_amean,Alpha ratio (spectral tilt),prosody,-0.7132352941176471,large,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_hammarbergIndexV_sma3nz_amean,Hammarberg index (spectral tilt),prosody,0.4338235294117647,medium,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_slopeV0-500_sma3nz_amean,Spectral slope 0-500 Hz,prosody,-0.35294117647058826,medium,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_slopeV500-1500_sma3nz_amean,Spectral slope 500-1500 Hz,prosody,-0.3897058823529412,medium,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_logRelF0-H1-H2_sma3nz_amean,Open quotient (H1-H2),prosody,0.27205882352941174,small,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_logRelF0-H1-A3_sma3nz_amean,Source tilt (H1-A3),prosody,0.5588235294117647,large,33
+timbre,Timbre (tone colour),egemaps_mfcc1V_sma3nz_amean,Timbre MFCC1 (brightness),prosody,0.2426470588235294,small,33
+timbre,Timbre (tone colour),egemaps_mfcc2V_sma3nz_amean,Timbre MFCC2 (low-vs-mid colour),prosody,0.7426470588235294,large,33
+timbre,Timbre (tone colour),egemaps_mfcc3V_sma3nz_amean,Timbre MFCC3,prosody,0.47794117647058826,large,33
+timbre,Timbre (tone colour),egemaps_mfcc4V_sma3nz_amean,Timbre MFCC4,prosody,-0.10294117647058823,negligible,33
+source_pitch,Pitch level,egemaps_F0semitoneFrom27.5Hz_sma3nz_amean,Pitch (F0 mean),prosody,-0.051470588235294115,negligible,33
+source_pitch,Pitch level,egemaps_F0semitoneFrom27.5Hz_sma3nz_percentile50.0,Pitch (F0 median),prosody,-0.007352941176470588,negligible,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevNorm,Pitch variability (F0 SD),prosody,0.3382352941176471,medium,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_pctlrange0-2,Pitch range,prosody,-0.39705882352941174,medium,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanRisingSlope,Pitch rising slope,prosody,0.21323529411764705,small,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope,Pitch falling slope,prosody,0.1323529411764706,negligible,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevRisingSlope,Pitch rising-slope SD,prosody,0.16911764705882354,small,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevFallingSlope,Pitch falling-slope SD,prosody,0.27941176470588236,small,33
+central_control,Pitch/timing control,egemaps_VoicedSegmentsPerSec,Speaking-rate proxy,prosody,-0.07720588235294118,negligible,33
+central_control,Pitch/timing control,egemaps_MeanVoicedSegmentLengthSec,Mean voiced-segment length,prosody,-0.20588235294117646,small,33
+central_control,Pitch/timing control,egemaps_StddevVoicedSegmentLengthSec,Voiced-segment length SD,prosody,-0.29411764705882354,small,33
+geometry_damping,Resonance damping,egemaps_F1bandwidth_sma3nz_amean,F1 bandwidth (resonance damping),prosody,-0.11764705882352941,negligible,33
+geometry_damping,Resonance damping,egemaps_F2bandwidth_sma3nz_amean,F2 bandwidth (resonance damping),prosody,0.25735294117647056,small,33
+geometry_damping,Resonance damping,egemaps_F3bandwidth_sma3nz_amean,F3 bandwidth (resonance damping),prosody,-0.5220588235294118,large,33
+geometry,Vocal-tract geometry (SPARED),egemaps_F1frequency_sma3nz_amean,F1 (mouth openness),prosody,0.16176470588235295,small,33
+geometry,Vocal-tract geometry (SPARED),egemaps_F2frequency_sma3nz_amean,F2 (tongue front-back),prosody,0.3235294117647059,small,33
+geometry,Vocal-tract geometry (SPARED),egemaps_F3frequency_sma3nz_amean,F3 (fine tract shape),prosody,0.375,medium,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_HNRdBACF_sma3nz_amean,Clarity (HNR),vowel,-0.0661764705882353,negligible,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_jitterLocal_sma3nz_amean,Jitter,vowel,0.022058823529411766,negligible,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_shimmerLocaldB_sma3nz_amean,Shimmer,vowel,0.029411764705882353,negligible,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_alphaRatioV_sma3nz_amean,Alpha ratio (spectral tilt),vowel,-0.4632352941176471,medium,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_hammarbergIndexV_sma3nz_amean,Hammarberg index (spectral tilt),vowel,0.27941176470588236,small,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_slopeV0-500_sma3nz_amean,Spectral slope 0-500 Hz,vowel,-0.2647058823529412,small,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_slopeV500-1500_sma3nz_amean,Spectral slope 500-1500 Hz,vowel,-0.4338235294117647,medium,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_logRelF0-H1-H2_sma3nz_amean,Open quotient (H1-H2),vowel,0.6323529411764706,large,33
+peripheral_cover,Cover quality (mucosa/closure),egemaps_logRelF0-H1-A3_sma3nz_amean,Source tilt (H1-A3),vowel,0.4485294117647059,medium,33
+timbre,Timbre (tone colour),egemaps_mfcc1V_sma3nz_amean,Timbre MFCC1 (brightness),vowel,0.25735294117647056,small,33
+timbre,Timbre (tone colour),egemaps_mfcc2V_sma3nz_amean,Timbre MFCC2 (low-vs-mid colour),vowel,0.41911764705882354,medium,33
+timbre,Timbre (tone colour),egemaps_mfcc3V_sma3nz_amean,Timbre MFCC3,vowel,-0.022058823529411766,negligible,33
+timbre,Timbre (tone colour),egemaps_mfcc4V_sma3nz_amean,Timbre MFCC4,vowel,0.27205882352941174,small,33
+source_pitch,Pitch level,egemaps_F0semitoneFrom27.5Hz_sma3nz_amean,Pitch (F0 mean),vowel,-0.3161764705882353,small,33
+source_pitch,Pitch level,egemaps_F0semitoneFrom27.5Hz_sma3nz_percentile50.0,Pitch (F0 median),vowel,-0.3382352941176471,medium,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevNorm,Pitch variability (F0 SD),vowel,0.11764705882352941,negligible,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_pctlrange0-2,Pitch range,vowel,0.0,negligible,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanRisingSlope,Pitch rising slope,vowel,0.051470588235294115,negligible,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope,Pitch falling slope,vowel,0.25735294117647056,small,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevRisingSlope,Pitch rising-slope SD,vowel,-0.22794117647058823,small,33
+central_control,Pitch/timing control,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevFallingSlope,Pitch falling-slope SD,vowel,0.20588235294117646,small,33
+central_control,Pitch/timing control,egemaps_VoicedSegmentsPerSec,Speaking-rate proxy,vowel,0.16544117647058823,small,33
+central_control,Pitch/timing control,egemaps_MeanVoicedSegmentLengthSec,Mean voiced-segment length,vowel,0.01838235294117647,negligible,33
+central_control,Pitch/timing control,egemaps_StddevVoicedSegmentLengthSec,Voiced-segment length SD,vowel,0.014705882352941176,negligible,33
+geometry_damping,Resonance damping,egemaps_F1bandwidth_sma3nz_amean,F1 bandwidth (resonance damping),vowel,0.13970588235294118,negligible,33
+geometry_damping,Resonance damping,egemaps_F2bandwidth_sma3nz_amean,F2 bandwidth (resonance damping),vowel,0.5441176470588235,large,33
+geometry_damping,Resonance damping,egemaps_F3bandwidth_sma3nz_amean,F3 bandwidth (resonance damping),vowel,0.14705882352941177,small,33
+geometry,Vocal-tract geometry (SPARED),egemaps_F1frequency_sma3nz_amean,F1 (mouth openness),vowel,0.25,small,33
+geometry,Vocal-tract geometry (SPARED),egemaps_F2frequency_sma3nz_amean,F2 (tongue front-back),vowel,0.25,small,33
+geometry,Vocal-tract geometry (SPARED),egemaps_F3frequency_sma3nz_amean,F3 (fine tract shape),vowel,0.10294117647058823,negligible,33

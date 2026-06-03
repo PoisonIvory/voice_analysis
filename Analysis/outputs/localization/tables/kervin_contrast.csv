@@ -1,0 +1,4 @@
+measure,kervin_normal_cycling,ours_pmdd,ours_value_sd
+"Pitch (F0), luteal",highest in luteal,lower in luteal,-0.14991676557819042
+"Clarity (Kervin CPPS / our HNR), luteal",best near fertile window,higher in luteal,0.985870703263546
+"Glottal closure / open quotient, luteal","GAI lowest in luteal (more closure, kinematic)",open quotient higher in luteal (acoustic),0.6062375299796245

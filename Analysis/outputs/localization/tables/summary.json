@@ -1,0 +1,92 @@
+{
+  "coverage": {
+    "voice_days": 59,
+    "voice_phase_days": 57,
+    "voice_hormone_days": 29
+  },
+  "dissociation_primary": {
+    "task": "prosody",
+    "moved_set": "broad",
+    "moved_abs_cliffs": 0.40780542986425333,
+    "spared_abs_cliffs": 0.286764705882353,
+    "dissociation_D": 0.12104072398190036,
+    "perm_p": 0.10037992401519696,
+    "n_perm": 5000
+  },
+  "equivalence_primary": {
+    "task": "prosody",
+    "sesoi": 0.147,
+    "geometry_abs_cliffs": 0.286764705882353,
+    "geometry_ci90_lo": 0.10009803921568629,
+    "geometry_ci90_hi": 0.5793086419753084,
+    "moved_abs_cliffs": 0.40780542986425333,
+    "equivalent_to_negligible": false
+  },
+  "sensitivity_floor": [
+    {
+      "formant": "F1 (mouth openness)",
+      "mean_hz": 614.9616088867188,
+      "within_recording_sd_hz": 184.00872489831818,
+      "vowel_vs_prosody_shift_hz": 36.65423583984375,
+      "cycle_shift_hz": 1.7529296875,
+      "sensitivity_ratio_withinrec": 104.97210824282887,
+      "sensitivity_ratio_task": 20.910271587743733
+    },
+    {
+      "formant": "F2 (tongue front-back)",
+      "mean_hz": 1674.08154296875,
+      "within_recording_sd_hz": 209.5595521817595,
+      "vowel_vs_prosody_shift_hz": 114.32217407226562,
+      "cycle_shift_hz": 5.765167236328125,
+      "sensitivity_ratio_withinrec": 36.34925815529844,
+      "sensitivity_ratio_task": 19.829810547712437
+    },
+    {
+      "formant": "F3 (fine tract shape)",
+      "mean_hz": 2770.48876953125,
+      "within_recording_sd_hz": 235.02253587546693,
+      "vowel_vs_prosody_shift_hz": 29.9547119140625,
+      "cycle_shift_hz": 34.8577880859375,
+      "sensitivity_ratio_withinrec": 6.742324994805992,
+      "sensitivity_ratio_task": 0.8593405823746739
+    }
+  ],
+  "peripheral_vs_central": [
+    {
+      "task": "prosody",
+      "arm": "central",
+      "hormone": "e3g",
+      "mean_abs_partial_rho": 0.14892725279578206
+    },
+    {
+      "task": "prosody",
+      "arm": "central",
+      "hormone": "ep_ratio",
+      "mean_abs_partial_rho": 0.1274703914865612
+    },
+    {
+      "task": "prosody",
+      "arm": "central",
+      "hormone": "pdg",
+      "mean_abs_partial_rho": 0.17180190512720073
+    },
+    {
+      "task": "prosody",
+      "arm": "peripheral",
+      "hormone": "e3g",
+      "mean_abs_partial_rho": 0.07465851271097204
+    },
+    {
+      "task": "prosody",
+      "arm": "peripheral",
+      "hormone": "ep_ratio",
+      "mean_abs_partial_rho": 0.21783717939669764
+    },
+    {
+      "task": "prosody",
+      "arm": "peripheral",
+      "hormone": "pdg",
+      "mean_abs_partial_rho": 0.23670114334136036
+    }
+  ]
+}

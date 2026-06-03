@@ -1,0 +1,4 @@
+signal,median_follicular,median_luteal,cliffs_delta_luteal_vs_foll,n_foll,n_lut,note
+Body temperature trend,0.0,0.14,0.5985797827903091,76,63,classic luteal rise (positive control)
+Heart-rate variability (HRV),28.5,24.0,-0.25725725725725723,74,54,luteal dip; PMDD linked to blunted/dysregulated HRV
+Daytime heart rate,71.75,74.3125,0.3893893893893894,74,54,classic luteal rise (positive control)

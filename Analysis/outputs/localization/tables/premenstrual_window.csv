@@ -1,0 +1,6 @@
+arm,feature,label,task,follicular_z,mid_luteal_z,premenstrual_z,premenstrual_minus_follicular
+cover,egemaps_logRelF0-H1-H2_sma3nz_amean,Open quotient (H1-H2),prosody,-0.07450763958474095,0.30194087135940995,0.06035308408340237,0.13486072366814333
+cover,egemaps_HNRdBACF_sma3nz_amean,Clarity (HNR),prosody,-0.010966468564211199,0.7860870221397541,-0.14344023051983765,-0.13247376195562643
+cover,egemaps_mfcc2V_sma3nz_amean,Timbre (MFCC2),prosody,-0.39734204904587545,0.19579778595278188,0.923255395535512,1.3205974445813875
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevNorm,Pitch variability (F0 SD),prosody,-0.44922236677789695,-0.6419726699259422,0.37954332533665236,0.8287656921145493
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope,Pitch falling slope,prosody,-0.13637004901104405,0.8447904712798203,-0.013166802739091418,0.12320324627195263

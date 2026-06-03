@@ -1,0 +1,67 @@
+arm,feature,label,task,hormone,n,raw_rho,partial_rho
+peripheral,egemaps_HNRdBACF_sma3nz_amean,Clarity (HNR),prosody,e3g,29,0.35320197044334967,0.08777776733332701
+peripheral,egemaps_HNRdBACF_sma3nz_amean,Clarity (HNR),prosody,pdg,29,0.40492610837438414,0.3489244296469702
+peripheral,egemaps_HNRdBACF_sma3nz_amean,Clarity (HNR),prosody,ep_ratio,29,-0.12068965517241378,-0.23708327833188675
+peripheral,egemaps_jitterLocal_sma3nz_amean,Jitter,prosody,e3g,29,0.003940886699507388,0.024534837699074195
+peripheral,egemaps_jitterLocal_sma3nz_amean,Jitter,prosody,pdg,29,0.12906403940886696,0.1411877561713859
+peripheral,egemaps_jitterLocal_sma3nz_amean,Jitter,prosody,ep_ratio,29,-0.1133004926108374,-0.11011175394275496
+peripheral,egemaps_shimmerLocaldB_sma3nz_amean,Shimmer,prosody,e3g,29,-0.2527093596059113,-0.08534007422415867
+peripheral,egemaps_shimmerLocaldB_sma3nz_amean,Shimmer,prosody,pdg,29,-0.31576354679802954,-0.2545519927242323
+peripheral,egemaps_shimmerLocaldB_sma3nz_amean,Shimmer,prosody,ep_ratio,29,0.05418719211822659,0.10247387702699878
+peripheral,egemaps_alphaRatioV_sma3nz_amean,Alpha ratio (spectral tilt),prosody,e3g,29,-0.16995073891625612,0.053806869418445695
+peripheral,egemaps_alphaRatioV_sma3nz_amean,Alpha ratio (spectral tilt),prosody,pdg,29,-0.3551724137931034,-0.2922701577824038
+peripheral,egemaps_alphaRatioV_sma3nz_amean,Alpha ratio (spectral tilt),prosody,ep_ratio,29,0.24433497536945803,0.32741078375726634
+peripheral,egemaps_hammarbergIndexV_sma3nz_amean,Hammarberg index (spectral tilt),prosody,e3g,29,0.3088669950738916,0.14015733624977827
+peripheral,egemaps_hammarbergIndexV_sma3nz_amean,Hammarberg index (spectral tilt),prosody,pdg,29,0.4778325123152708,0.43419155648695335
+peripheral,egemaps_hammarbergIndexV_sma3nz_amean,Hammarberg index (spectral tilt),prosody,ep_ratio,29,-0.289655172413793,-0.36784566112961814
+peripheral,egemaps_slopeV0-500_sma3nz_amean,Spectral slope 0-500 Hz,prosody,e3g,29,0.06305418719211821,0.017755182451074245
+peripheral,egemaps_slopeV0-500_sma3nz_amean,Spectral slope 0-500 Hz,prosody,pdg,29,0.21231527093596053,0.19558641906488064
+peripheral,egemaps_slopeV0-500_sma3nz_amean,Spectral slope 0-500 Hz,prosody,ep_ratio,29,-0.13694581280788173,-0.14871761508744594
+peripheral,egemaps_slopeV500-1500_sma3nz_amean,Spectral slope 500-1500 Hz,prosody,e3g,29,0.28275862068965507,0.20391122054228875
+peripheral,egemaps_slopeV500-1500_sma3nz_amean,Spectral slope 500-1500 Hz,prosody,pdg,29,-0.10591133004926105,-0.16562545907854284
+peripheral,egemaps_slopeV500-1500_sma3nz_amean,Spectral slope 500-1500 Hz,prosody,ep_ratio,29,0.26059113300492603,0.24517655998910318
+peripheral,egemaps_logRelF0-H1-H2_sma3nz_amean,Open quotient (H1-H2),prosody,e3g,29,0.20344827586206893,-0.029334954830422266
+peripheral,egemaps_logRelF0-H1-H2_sma3nz_amean,Open quotient (H1-H2),prosody,pdg,29,0.04630541871921181,-0.07225465607154165
+peripheral,egemaps_logRelF0-H1-H2_sma3nz_amean,Open quotient (H1-H2),prosody,ep_ratio,29,0.11576354679802954,0.07684603212872221
+peripheral,egemaps_logRelF0-H1-A3_sma3nz_amean,Source tilt (H1-A3),prosody,e3g,29,0.11231527093596057,-0.011683316951473477
+peripheral,egemaps_logRelF0-H1-A3_sma3nz_amean,Source tilt (H1-A3),prosody,pdg,29,0.3231527093596058,0.2814294038165126
+peripheral,egemaps_logRelF0-H1-A3_sma3nz_amean,Source tilt (H1-A3),prosody,ep_ratio,29,-0.22709359605911325,-0.26400342137932525
+peripheral,egemaps_mfcc1V_sma3nz_amean,Timbre MFCC1 (brightness),prosody,e3g,29,0.13152709359605907,0.04912633936808183
+peripheral,egemaps_mfcc1V_sma3nz_amean,Timbre MFCC1 (brightness),prosody,pdg,29,0.24236453201970437,0.20891613326562294
+peripheral,egemaps_mfcc1V_sma3nz_amean,Timbre MFCC1 (brightness),prosody,ep_ratio,29,-0.1571428571428571,-0.18054505191375492
+peripheral,egemaps_mfcc2V_sma3nz_amean,Timbre MFCC2 (low-vs-mid colour),prosody,e3g,29,0.2428571428571428,0.12142700721053551
+peripheral,egemaps_mfcc2V_sma3nz_amean,Timbre MFCC2 (low-vs-mid colour),prosody,pdg,29,0.4463054187192117,0.4079124446329363
+peripheral,egemaps_mfcc2V_sma3nz_amean,Timbre MFCC2 (low-vs-mid colour),prosody,ep_ratio,29,-0.3142857142857142,-0.36318685087207264
+peripheral,egemaps_mfcc3V_sma3nz_amean,Timbre MFCC3,prosody,e3g,29,-0.07142857142857141,-0.0670174782915101
+peripheral,egemaps_mfcc3V_sma3nz_amean,Timbre MFCC3,prosody,pdg,29,-0.015270935960591127,-0.00969241082619604
+peripheral,egemaps_mfcc3V_sma3nz_amean,Timbre MFCC3,prosody,ep_ratio,29,-0.042857142857142844,-0.040441035591176275
+peripheral,egemaps_mfcc4V_sma3nz_amean,Timbre MFCC4,prosody,e3g,29,0.09113300492610836,0.07868828067246648
+peripheral,egemaps_mfcc4V_sma3nz_amean,Timbre MFCC4,prosody,pdg,29,-0.24729064039408863,-0.2645720438695064
+peripheral,egemaps_mfcc4V_sma3nz_amean,Timbre MFCC4,prosody,ep_ratio,29,0.3704433497536945,0.368041411006944
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevNorm,Pitch variability (F0 SD),prosody,e3g,29,0.19556650246305415,0.22253239732156183
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevNorm,Pitch variability (F0 SD),prosody,pdg,29,0.13448275862068965,0.13852594518408817
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevNorm,Pitch variability (F0 SD),prosody,ep_ratio,29,0.015763546798029552,0.01609460425201635
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_pctlrange0-2,Pitch range,prosody,e3g,29,-0.1527093596059113,0.16665752610979517
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_pctlrange0-2,Pitch range,prosody,pdg,29,-0.5211822660098521,-0.4937657072250881
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_pctlrange0-2,Pitch range,prosody,ep_ratio,29,0.3389162561576354,0.49198601371526307
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanRisingSlope,Pitch rising slope,prosody,e3g,29,0.12364532019704431,0.06654028845785423
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanRisingSlope,Pitch rising slope,prosody,pdg,29,0.13990147783251228,0.11260094360193054
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanRisingSlope,Pitch rising slope,prosody,ep_ratio,29,-0.024630541871921176,-0.03934461558405908
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope,Pitch falling slope,prosody,e3g,29,0.13891625615763545,0.22397728692096955
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope,Pitch falling slope,prosody,pdg,29,0.1763546798029556,0.21071356009926198
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_meanFallingSlope,Pitch falling slope,prosody,ep_ratio,29,-0.12118226600985219,-0.11014287181383971
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevRisingSlope,Pitch rising-slope SD,prosody,e3g,29,0.112807881773399,0.023612100782270405
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevRisingSlope,Pitch rising-slope SD,prosody,pdg,29,0.034482758620689655,-0.010044358413089604
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevRisingSlope,Pitch rising-slope SD,prosody,ep_ratio,29,0.058128078817733984,0.0391473280104276
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevFallingSlope,Pitch falling-slope SD,prosody,e3g,29,-0.11083743842364528,-0.09015515720309902
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevFallingSlope,Pitch falling-slope SD,prosody,pdg,29,0.12610837438423642,0.1450333697548887
+central,egemaps_F0semitoneFrom27.5Hz_sma3nz_stddevFallingSlope,Pitch falling-slope SD,prosody,ep_ratio,29,-0.16551724137931031,-0.15992675607357962
+central,egemaps_VoicedSegmentsPerSec,Speaking-rate proxy,prosody,e3g,29,0.10199556850557413,0.1071845249664401
+central,egemaps_VoicedSegmentsPerSec,Speaking-rate proxy,prosody,pdg,29,0.2875092474541183,0.29142871243347973
+central,egemaps_VoicedSegmentsPerSec,Speaking-rate proxy,prosody,ep_ratio,29,-0.20867209305367462,-0.21134523200339367
+central,egemaps_MeanVoicedSegmentLengthSec,Mean voiced-segment length,prosody,e3g,29,-0.056157635467980284,-0.18796818880154986
+central,egemaps_MeanVoicedSegmentLengthSec,Mean voiced-segment length,prosody,pdg,29,-0.04778325123152708,-0.10346070909657719
+central,egemaps_MeanVoicedSegmentLengthSec,Mean voiced-segment length,prosody,ep_ratio,29,0.010837438423645318,-0.012378379678104115
+central,egemaps_StddevVoicedSegmentLengthSec,Voiced-segment length SD,prosody,e3g,29,-0.07783251231527093,-0.2517178045984983
+central,egemaps_StddevVoicedSegmentLengthSec,Voiced-segment length SD,prosody,pdg,29,0.026600985221674867,-0.040643840336402545
+central,egemaps_StddevVoicedSegmentLengthSec,Voiced-segment length SD,prosody,ep_ratio,29,-0.034482758620689655,-0.06686772224836755

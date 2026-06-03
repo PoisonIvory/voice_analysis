@@ -1,0 +1,10 @@
+feature,label,role,n_follicular_days,n_luteal_days,cliffs_delta,magnitude,mann_whitney_p,shift_jan_sd,shift_feb_sd,cycles_consistent,cycles_total,bh_q,backbone
+dprime_vowel_height,Vowel height (high vs non-high),geometry_control,30,22,-0.358,medium,0.0295329010804047,-0.09,-1.526,3,3,0.1328980548618214,hubert-base
+dprime_vowel_lowness,Vowel lowness (low vs non-low),geometry_control,30,22,0.015,negligible,0.933575131939714,-0.295,0.145,2,3,0.933575131939714,hubert-base
+dprime_vowel_backness,Vowel backness (back vs front),geometry_control,30,22,-0.048,negligible,0.7740462669093678,-0.367,0.369,2,3,0.933575131939714,hubert-base
+dprime_vowel_height,Vowel height (high vs non-high),geometry_control,30,22,-0.273,small,0.0973797155219805,-0.793,-0.463,3,3,0.8025541897243599,wav2vec2-base
+dprime_vowel_lowness,Vowel lowness (low vs non-low),geometry_control,30,22,-0.073,negligible,0.6633738428845809,-0.056,-0.403,2,3,0.8025541897243599,wav2vec2-base
+dprime_vowel_backness,Vowel backness (back vs front),geometry_control,30,22,-0.124,negligible,0.4531772355209542,0.56,-0.125,1,3,0.8025541897243599,wav2vec2-base
+dprime_vowel_height,Vowel height (high vs non-high),geometry_control,30,22,-0.203,small,0.2180638995730263,0.492,-1.049,2,3,0.4584024499262128,wavlm-base
+dprime_vowel_lowness,Vowel lowness (low vs non-low),geometry_control,30,22,-0.109,negligible,0.5108465121363511,-0.563,-0.067,2,3,0.6568026584610228,wavlm-base
+dprime_vowel_backness,Vowel backness (back vs front),geometry_control,30,22,-0.188,small,0.2546680277367849,-0.605,-0.902,3,3,0.4584024499262128,wavlm-base
