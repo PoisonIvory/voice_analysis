@@ -9,10 +9,10 @@ open-quotient signal is not a re-description of a pitch difference.
 
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 
-from ..stats import cliffs_delta, cliffs_magnitude
+from ..residualize import residualize
+from ..stats import cliffs_magnitude
 from .aggregation import day_series
 from .localization import _phase_delta
 
@@ -22,11 +22,9 @@ MANNERS = ["vowel", "diphthong", "nasal", "approximant", "stop", "fricative"]
 def residualize_h1h2_on_f0(df: pd.DataFrame) -> pd.DataFrame:
     """Return analyzable voiced segments with an F0-residualized H1-H2 column."""
     av = df.dropna(subset=["segment_h1h2_mean", "segment_f0_mean"]).copy()
-    X = np.column_stack([np.ones(len(av)), av["segment_f0_mean"].to_numpy(float)])
-    y = av["segment_h1h2_mean"].to_numpy(float)
-    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
-    av["h1h2_resid_f0"] = y - X @ beta
-    av.attrs["f0_r2"] = float(1.0 - np.var(av["h1h2_resid_f0"]) / np.var(y))
+    result = residualize(av, "segment_h1h2_mean", ["segment_f0_mean"])
+    av["h1h2_resid_f0"] = result.residual
+    av.attrs["f0_r2"] = result.r_squared
     return av
 
 

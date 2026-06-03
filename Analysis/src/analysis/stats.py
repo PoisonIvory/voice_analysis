@@ -62,6 +62,9 @@ def phase_contrast(
     Cliff's delta is computed as luteal-vs-follicular (positive = higher in luteal).
     `cycles_consistent` counts cycles whose luteal-minus-follicular median shares
     the sign of the pooled difference.
+
+    `mann_whitney_p` treats each day as independent; serial dependence within cycles
+    makes it anti-conservative. Prefer effect sizes and cross-cycle consistency.
     """
     sub = df[[feature, group_col, cycle_col]].dropna(subset=[feature, group_col])
     foll = sub.loc[sub[group_col] == "follicular", feature].to_numpy(dtype=float)
@@ -106,54 +109,11 @@ def phase_contrast(
     )
 
 
-@dataclass(frozen=True)
-class HormoneCoupling:
-    feature: str
-    hormone: str
-    n: int
-    spearman_rho: float
-    spearman_p: float
-    boot_lo: float
-    boot_hi: float
-
-
-def hormone_coupling(
-    df: pd.DataFrame, feature: str, hormone: str, n_boot: int = 1000, seed: int = 7
-) -> HormoneCoupling:
-    """Spearman correlation of a voice feature with a hormone, with bootstrap CI.
-
-    The bootstrap CI uses a fast rank-then-Pearson approximation (Spearman is
-    Pearson on ranks), vectorized across all resamples at once.
-    """
-    sub = df[[feature, hormone]].dropna()
-    x = sub[feature].to_numpy(dtype=float)
-    y = sub[hormone].to_numpy(dtype=float)
-    n = x.size
-    if n < 5:
-        return HormoneCoupling(feature, hormone, n, np.nan, np.nan, np.nan, np.nan)
-
-    rho, p = stats.spearmanr(x, y)
-
-    rx = stats.rankdata(x)
-    ry = stats.rankdata(y)
-    rng = np.random.default_rng(seed)
-    idx = rng.integers(0, n, size=(n_boot, n))
-    bx = rx[idx]
-    by = ry[idx]
-    bx = bx - bx.mean(axis=1, keepdims=True)
-    by = by - by.mean(axis=1, keepdims=True)
-    num = (bx * by).sum(axis=1)
-    den = np.sqrt((bx**2).sum(axis=1) * (by**2).sum(axis=1))
-    with np.errstate(invalid="ignore", divide="ignore"):
-        boots = np.where(den > 0, num / den, np.nan)
-    lo, hi = np.nanpercentile(boots, [2.5, 97.5])
-    return HormoneCoupling(feature, hormone, int(n), float(rho), float(p), float(lo), float(hi))
-
-
 def partial_spearman(df: pd.DataFrame, x: str, y: str, z: str) -> tuple[float, int]:
     """First-order partial Spearman of x,y controlling for nuisance z (e.g. date).
 
     Returns (partial_rho, n). Used to separate true coupling from shared drift.
+    Descriptive only: no p-value and no adjustment for serial dependence.
     """
     sub = df[[x, y, z]].dropna()
     n = len(sub)
@@ -169,7 +129,11 @@ def partial_spearman(df: pd.DataFrame, x: str, y: str, z: str) -> tuple[float, i
 
 
 def benjamini_hochberg(pvals: np.ndarray) -> np.ndarray:
-    """Return BH-FDR adjusted q-values for an array of p-values."""
+    """Return BH-FDR adjusted q-values for an array of p-values.
+
+    Assumes independent (or positively dependent) tests; serially correlated day
+    p-values are anti-conservative. Use for screening, not as sole confirmatory evidence.
+    """
     p = np.asarray(pvals, dtype=float)
     mask = ~np.isnan(p)
     q = np.full_like(p, np.nan)
