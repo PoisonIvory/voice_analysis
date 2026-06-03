@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voice-cycle tracking: a hormone-anchored data story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --paper: #FFFFFF;
+    --ink: #111827;
+    --muted: #4B5563;
+    --faint: #6B7280;
+    --line: #D7DAE0;
+    --soft: #F1F3F5;
+    --accent: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --green: #047857;
+    --green-soft: #ECFDF5;
+    --amber: #B45309;
+    --amber-soft: #FFFBEB;
+    --purple: #6D28D9;
+    --purple-soft: #F5F3FF;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .deck { height: 100vh; width: 100vw; }
+  .slide {
+    display: none;
+    flex-direction: column;
+    gap: 26px;
+    inset: 0;
+    opacity: 0;
+    padding: 54px 72px 82px;
+    position: absolute;
+    transition: opacity 180ms ease;
+  }
+  .slide.active { display: flex; opacity: 1; }
+
+  .slide-head {
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: 18px;
+    grid-template-columns: 1fr auto;
+    padding-bottom: 18px;
+  }
+  .section {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .slide-no {
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding-top: 2px;
+  }
+
+  h1 {
+    font-size: clamp(44px, 5.2vw, 72px);
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+    max-width: 14ch;
+  }
+  h2 {
+    font-size: clamp(30px, 3.4vw, 46px);
+    font-weight: 760;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    max-width: 25ch;
+  }
+  h3 {
+    font-size: clamp(20px, 1.7vw, 24px);
+    font-weight: 720;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+  p, li {
+    font-size: clamp(17px, 1.35vw, 20px);
+    line-height: 1.46;
+  }
+  strong { color: var(--ink); font-weight: 720; }
+  .muted { color: var(--muted); }
+  .fine { color: var(--faint); font-size: 14px; line-height: 1.35; }
+  .mono { font-family: var(--mono); }
+  .num {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-weight: 650;
+  }
+
+  .title-slide {
+    justify-content: center;
+    padding: 70px 92px 92px;
+  }
+  .title-grid {
+    align-items: center;
+    display: grid;
+    gap: 64px;
+    grid-template-columns: 0.98fr 1.02fr;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: clamp(21px, 1.8vw, 26px);
+    line-height: 1.42;
+    margin-top: 24px;
+    max-width: 54ch;
+  }
+  .byline {
+    color: var(--faint);
+    font-size: 15px;
+    margin-top: 28px;
+  }
+  .thesis {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .thesis-label,
+  .callout-label,
+  .card-label {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .thesis-text {
+    border-left: 5px solid var(--accent);
+    font-size: clamp(24px, 2.25vw, 34px);
+    font-weight: 720;
+    line-height: 1.22;
+    margin-top: 18px;
+    padding-left: 22px;
+  }
+
+  .content {
+    align-items: stretch;
+    display: grid;
+    gap: 34px;
+    grid-template-columns: minmax(0, 1.12fr) minmax(330px, 0.88fr);
+    min-height: 0;
+  }
+  .content.reverse { grid-template-columns: minmax(330px, 0.88fr) minmax(0, 1.12fr); }
+  .content.equal { grid-template-columns: 1fr 1fr; }
+  .content.single { grid-template-columns: 1fr; }
+
+  .figure {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    padding: 10px;
+  }
+  .figure img {
+    border-radius: 4px;
+    display: block;
+    max-height: 54vh;
+    object-fit: contain;
+    width: 100%;
+  }
+  .figure.compact img { max-height: 42vh; }
+  .caption {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.38;
+    margin-top: 10px;
+    padding: 0 2px 2px;
+  }
+
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .panel.soft {
+    background: var(--soft);
+  }
+  .callout {
+    border-left: 5px solid var(--accent);
+    padding-left: 20px;
+  }
+  .callout h3 { margin-top: 10px; }
+  .callout p { color: var(--muted); margin-top: 10px; }
+
+  .bullets {
+    list-style: none;
+    margin-top: 16px;
+  }
+  .bullets li {
+    border-top: 1px solid var(--line);
+    padding: 13px 0 13px 24px;
+    position: relative;
+  }
+  .bullets li:first-child { border-top: 0; padding-top: 0; }
+  .bullets li::before {
+    background: var(--accent);
+    border-radius: 999px;
+    content: "";
+    height: 7px;
+    left: 2px;
+    position: absolute;
+    top: 22px;
+    width: 7px;
+  }
+  .bullets li:first-child::before { top: 9px; }
+  .bullets.dim li::before { background: var(--faint); }
+
+  .stat-row {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .stat {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .stat .value {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: clamp(30px, 3vw, 42px);
+    font-weight: 650;
+    line-height: 1;
+  }
+  .stat .label {
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 9px;
+  }
+
+  .method-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 18px;
+  }
+  .method {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .method-title {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .method p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.38;
+    margin-top: 8px;
+  }
+
+  .storyline {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .story-step {
+    align-items: start;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 46px 1fr;
+    padding: 18px;
+  }
+  .story-num {
+    align-items: center;
+    background: var(--accent-soft);
+    border: 1px solid #BFDBFE;
+    border-radius: 999px;
+    color: var(--accent);
+    display: flex;
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 650;
+    height: 38px;
+    justify-content: center;
+    width: 38px;
+  }
+  .story-step h3 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .story-step p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .evidence-stack {
+    display: grid;
+    gap: 14px;
+  }
+  .mini-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .mini-card h3 {
+    font-size: 19px;
+    margin-top: 8px;
+  }
+  .mini-card p {
+    color: var(--muted);
+    font-size: 16px;
+    margin-top: 8px;
+  }
+  .mini-card.green { background: var(--green-soft); border-color: #A7F3D0; }
+  .mini-card.amber { background: var(--amber-soft); border-color: #FDE68A; }
+  .mini-card.purple { background: var(--purple-soft); border-color: #DDD6FE; }
+  .mini-card.green .card-label { color: var(--green); }
+  .mini-card.amber .card-label { color: var(--amber); }
+  .mini-card.purple .card-label { color: var(--purple); }
+
+  .confidence {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .tier {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .tier h3 {
+    font-size: 21px;
+    margin-top: 8px;
+  }
+  .tier .card-label.strong { color: var(--green); }
+  .tier .card-label.medium { color: var(--accent); }
+  .tier .card-label.directional { color: var(--amber); }
+  .tier li {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  table {
+    border-collapse: collapse;
+    margin-top: 18px;
+    width: 100%;
+  }
+  th, td {
+    border-bottom: 1px solid var(--line);
+    font-size: 16px;
+    padding: 12px 10px;
+    text-align: left;
+  }
+  th {
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .chrome {
+    align-items: center;
+    bottom: 0;
+    color: var(--faint);
+    display: flex;
+    font-family: var(--mono);
+    font-size: 12px;
+    justify-content: space-between;
+    left: 0;
+    padding: 13px 30px;
+    pointer-events: none;
+    position: fixed;
+    right: 0;
+    z-index: 5;
+  }
+  .brand {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .brand b { color: var(--ink); }
+  .nav {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    pointer-events: auto;
+  }
+  .nav button,
+  .editbar button {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    height: 32px;
+    padding: 0 10px;
+  }
+  .nav button { font-size: 16px; padding: 0; width: 34px; }
+  .nav button:hover,
+  .editbar button:hover { border-color: var(--accent); }
+  .counter { color: var(--ink); min-width: 62px; text-align: center; }
+  .progress {
+    background: var(--accent);
+    height: 3px;
+    left: 0;
+    position: fixed;
+    top: 0;
+    transition: width 180ms ease;
+    z-index: 6;
+  }
+  .hint {
+    bottom: 55px;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    left: 50%;
+    position: fixed;
+    transform: translateX(-50%);
+    z-index: 5;
+  }
+
+  .editbar {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    position: fixed;
+    right: 22px;
+    top: 16px;
+    z-index: 10;
+  }
+  .editbar .status {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--faint);
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+  body.editing [data-edit-id] {
+    outline: 1.5px dashed rgba(29,78,216,0.5);
+    outline-offset: 3px;
+    cursor: text;
+  }
+  body.editing [data-edit-id]:focus {
+    background: #FFFCEB;
+    outline: 2px solid var(--accent);
+  }
+
+  @media (max-width: 1050px) {
+    body { overflow: auto; }
+    .slide {
+      min-height: 100vh;
+      overflow: auto;
+      padding: 44px 34px 92px;
+    }
+    .title-slide { padding: 54px 36px 92px; }
+    .title-grid,
+    .content,
+    .content.reverse,
+    .content.equal,
+    .storyline,
+    .confidence {
+      grid-template-columns: 1fr;
+    }
+    .stat-row,
+    .method-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="editbar" aria-label="Editing controls">
+  <button id="editToggle" type="button">Edit text</button>
+  <button id="exportBtn" type="button">Export HTML</button>
+  <button id="resetBtn" type="button">Reset edits</button>
+  <span class="status" id="editStatus">View mode</span>
+</div>
+
+<div class="deck" id="deck">
+  <section class="slide title-slide">
+    <div class="title-grid">
+      <div>
+        <div class="section">Decibelle &middot; N-of-1 exploratory analysis</div>
+        <h1>Where does a cycle-linked voice signal live?</h1>
+        <p class="subtitle">A concise data story: I started with a broad question, followed hormone-anchored voice patterns, and tested whether the signal localized to vocal-fold surface quality, vocal-tract geometry, or central/prosodic control.</p>
+        <p class="byline">Ivy Hamilton &middot; June 2026 &middot; single speaker &middot; PMDD context</p>
+      </div>
+      <div class="thesis">
+        <div class="thesis-label">Main thesis</div>
+        <p class="thesis-text">In this speaker, the clearest cyclic pattern concentrates in surface/source-quality and timbre measures, with no detectable counterpart in vocal-tract geometry or phonological separability.</p>
+        <p class="muted" style="margin-top:18px;">This is a within-person pattern to test, not a population finding.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">The analytical journey</div>
+        <h2>Each result changed the next question</h2>
+      </div>
+      <div class="slide-no">02 / main</div>
+    </div>
+    <div class="storyline">
+      <div class="story-step">
+        <div class="story-num">1</div>
+        <div><h3>Asked</h3><p>Does my voice vary with my cycle? PMDD made the central pathway worth considering, not assuming.</p></div>
+      </div>
+      <div class="story-step">
+        <div class="story-num">2</div>
+        <div><h3>Captured</h3><p>Daily voice tasks, Inito hormones, Oura physiology, and cycle context aligned by date.</p></div>
+      </div>
+      <div class="story-step">
+        <div class="story-num">3</div>
+        <div><h3>Followed a clue</h3><p>Longitudinal traces suggested some acoustic features moved near progesterone dynamics.</p></div>
+      </div>
+      <div class="story-step">
+        <div class="story-num">4</div>
+        <div><h3>Localized</h3><p>Features were grouped by mechanism: surface/source quality, geometry, and prosodic control.</p></div>
+      </div>
+      <div class="story-step">
+        <div class="story-num">5</div>
+        <div><h3>Dug deeper</h3><p>Connected speech was force-aligned and tracked at the phoneme grain over time.</p></div>
+      </div>
+      <div class="story-step">
+        <div class="story-num">6</div>
+        <div><h3>Stress-tested</h3><p>Frozen speech-model d-prime tested whether the signal resembled articulation degradation.</p></div>
+      </div>
+    </div>
+    <p class="muted">The goal was not to find any changing feature. It was to ask where the signal appears, where it is absent, and whether those absences are informative.</p>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Data foundation</div>
+        <h2>Dense for one person, limited by phase balance</h2>
+      </div>
+      <div class="slide-no">03 / main</div>
+    </div>
+    <div class="content">
+      <div>
+        <div class="stat-row">
+          <div class="stat"><div class="value">59</div><div class="label">voice days across 9 cycles</div></div>
+          <div class="stat"><div class="value">29</div><div class="label">voice + hormone overlap days</div></div>
+          <div class="stat"><div class="value">2</div><div class="label">phase-balanced cycles</div></div>
+        </div>
+        <div class="method-grid">
+          <div class="method"><div class="method-title">Voice</div><p>Sustained vowel plus Rainbow Passage / read speech.</p></div>
+          <div class="method"><div class="method-title">Features</div><p>openSMILE eGeMAPS whole-recording acoustic measures.</p></div>
+          <div class="method"><div class="method-title">Hormones</div><p>Inito E3G and PdG, joined by calendar date.</p></div>
+          <div class="method"><div class="method-title">Controls</div><p>Oura temperature, HR, and HRV validate phase labels.</p></div>
+        </div>
+      </div>
+      <div class="figure compact">
+        <img src="assets/presentation/widescan_coverage.png" alt="Data coverage timeline" />
+        <p class="caption">Coverage is strongest in January-March. The main inference is constrained by 2 cycles with recordings in both phases.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">First clue</div>
+        <h2>A longitudinal trace motivated the deeper analysis</h2>
+      </div>
+      <div class="slide-no">04 / main</div>
+    </div>
+    <div class="content">
+      <div class="figure">
+        <img src="assets/presentation/hormone_feature_trace.png" alt="Voice feature overlaid with progesterone trace" />
+        <p class="caption">One acoustic feature over time with smoothed progesterone. This is useful as a clue, not as proof.</p>
+      </div>
+      <div class="evidence-stack">
+        <div class="mini-card amber">
+          <div class="card-label">What it suggested</div>
+          <h3>There may be a longitudinal voice-hormone signal.</h3>
+          <p>The pattern was interesting enough to investigate systematically.</p>
+        </div>
+        <div class="mini-card">
+          <div class="card-label">What it could not answer</div>
+          <h3>Is this biology, drift, or recording context?</h3>
+          <p>A single trace cannot localize the source of the change.</p>
+        </div>
+        <div class="mini-card">
+          <div class="card-label">Next question</div>
+          <h3>Which part of speech production is moving?</h3>
+          <p>That led to mechanism grouping and phoneme-grain tracking.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Wide scan</div>
+        <h2>The broad scan pointed toward quality and timbre</h2>
+      </div>
+      <div class="slide-no">05 / main</div>
+    </div>
+    <div class="content">
+      <div class="figure">
+        <img src="assets/presentation/widescan_effect_ranking.png" alt="Wide scan effect ranking" />
+        <p class="caption">Screening view of luteal-vs-follicular shifts across acoustic features. Intervals are wide, so this is hypothesis-generating.</p>
+      </div>
+      <div class="panel">
+        <div class="callout">
+          <div class="callout-label">Interpretation</div>
+          <h3>The largest shifts clustered in perturbation, spectral balance, harmonicity, and MFCC timbre.</h3>
+          <p>Mean F0 was comparatively stable, so "pitch changes with cycle" was not the central story.</p>
+        </div>
+        <ul class="bullets">
+          <li>This moved the analysis from feature ranking to mechanism grouping.</li>
+          <li>The next test asked whether surface/source quality moved differently from vocal-tract geometry.</li>
+          <li>The scan is a starting point. The stronger evidence comes from convergence across independent checks.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Localization</div>
+        <h2>Surface/source quality moves; tract geometry does not detectably move</h2>
+      </div>
+      <div class="slide-no">06 / main</div>
+    </div>
+    <div class="content">
+      <div class="figure">
+        <img src="outputs/localization/figures/fig01_localization_map.png" alt="Localization map" />
+        <p class="caption">Right = higher in luteal. Grey band = negligible. Top dark block = vocal-tract geometry.</p>
+      </div>
+      <div class="evidence-stack">
+        <div class="mini-card green">
+          <div class="card-label">Strongest pattern</div>
+          <h3>The moved and unmoved feature sets separate in both tasks.</h3>
+          <p>Prosody <span class="num">p = 0.008</span>; sustained vowel <span class="num">p = 0.049</span>, in this speaker.</p>
+        </div>
+        <div class="mini-card">
+          <div class="card-label">What moved</div>
+          <h3>Surface/source quality and timbre.</h3>
+          <p>Open quotient, clarity, spectral balance, and MFCC timbre carried the clearest shifts.</p>
+        </div>
+        <div class="mini-card">
+          <div class="card-label">What did not</div>
+          <h3>Vocal-tract geometry stayed near the negligible band.</h3>
+          <p>That absence is informative because the same measures clearly move within speech.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Hormones and drift</div>
+        <h2>PdG was the more plausible hormone link after drift control</h2>
+      </div>
+      <div class="slide-no">07 / main</div>
+    </div>
+    <div class="content">
+      <div class="figure">
+        <img src="outputs/localization/figures/fig03_two_hormones.png" alt="Hormone coupling after drift control" />
+        <p class="caption">Date-partial Spearman on hormone-overlap days. Associations, not causal effects.</p>
+      </div>
+      <div class="panel">
+        <div class="callout">
+          <div class="callout-label">Result</div>
+          <h3>Surface/quality measures coupled more with PdG than E3G after controlling for date drift.</h3>
+          <p>A tempting raw pitch-estrogen correlation weakened after removing shared month-over-month drift.</p>
+        </div>
+        <ul class="bullets">
+          <li>This is why drift control matters in longitudinal voice data.</li>
+          <li>PMDD belongs as context: progesterone's neurosteroid pathway makes central/prosodic control worth testing.</li>
+          <li>Without daily symptom logs, I would not frame this as a PMDD biomarker.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Phoneme-grain tracking</div>
+        <h2>Connected speech let me test localization below the recording average</h2>
+      </div>
+      <div class="slide-no">08 / main</div>
+    </div>
+    <div class="content">
+      <div class="figure">
+        <img src="outputs/phoneme/figures/fig07_phoneme_heatmap.png" alt="Per-phoneme heatmap across cycle weeks" />
+        <p class="caption">Per-phoneme H1-H2 in within-cycle units. Most voiced phones shift in the same direction into luteal weeks.</p>
+      </div>
+      <div class="evidence-stack">
+        <div class="mini-card green">
+          <div class="card-label">Method contribution</div>
+          <h3>Force-align connected speech, recompute features per phoneme, and track those features longitudinally.</h3>
+          <p>This is the most original technical step in the project.</p>
+        </div>
+        <div class="mini-card">
+          <div class="card-label">Main result</div>
+          <h3>Most of the signal looked global.</h3>
+          <p>It behaved like a recording-wide setting across much of the phonetic inventory.</p>
+        </div>
+        <div class="mini-card">
+          <div class="card-label">Residuals</div>
+          <h3>Diphthong H1-H2 and nasal MFCC2 survived de-meaning/FDR.</h3>
+          <p>Mechanistically coherent, but still single-subject leads.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Negative control</div>
+        <h2>The cycle did not look like degraded articulation</h2>
+      </div>
+      <div class="slide-no">09 / main</div>
+    </div>
+    <div class="content">
+      <div class="figure">
+        <img src="outputs/hubert/figures/fig02_phase_forest.png" alt="SSL phonological separability phase forest" />
+        <p class="caption">Frozen SSL d-prime across HuBERT, WavLM, and wav2vec2. The cycle does not resemble dysarthria-style separability collapse.</p>
+      </div>
+      <div class="panel">
+        <div class="callout">
+          <div class="callout-label">Specificity check</div>
+          <h3>I adapted a dysarthria-inspired measure of phonological separability in frozen speech-model embeddings.</h3>
+          <p>Composite effect was negligible: Cliff's <span class="num">&delta; = -0.12</span>.</p>
+        </div>
+        <ul class="bullets">
+          <li><span class="num">0/8</span> contrasts survived correction across 3 model backbones.</li>
+          <li>This supports an acoustic-surface/timbre interpretation.</li>
+          <li>It argues against an articulation-degradation story.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Close</div>
+        <h2>Strongest conclusion, honest uncertainty</h2>
+      </div>
+      <div class="slide-no">10 / main</div>
+    </div>
+    <div class="confidence">
+      <div class="tier">
+        <div class="card-label strong">Strongest pattern</div>
+        <h3>Localization</h3>
+        <ul class="bullets dim">
+          <li>Surface/source-quality and timbre move more than geometry.</li>
+          <li>The geometry null is supported by a sensitivity-floor check.</li>
+          <li>Phoneme analysis mostly reproduces a global setting.</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="card-label medium">Moderate evidence</div>
+        <h3>Convergence</h3>
+        <ul class="bullets dim">
+          <li>PdG association after date-drift control.</li>
+          <li>Diphthong and nasal residuals at the phoneme grain.</li>
+          <li>SSL separability null across three backbones.</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="card-label directional">Directional only</div>
+        <h3>Still unresolved</h3>
+        <ul class="bullets dim">
+          <li>PMDD / late-luteal central instability.</li>
+          <li>Hormone rate-of-change vs hormone level.</li>
+          <li>Generalization beyond this single speaker.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="subtitle" style="margin-top:0;">The contribution is a hormone-anchored, grain-aware way to ask where a cycle-linked voice signal lives: first in whole-recording acoustics, then at the phoneme grain, then against a representation-level negative control.</p>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Appendix &middot; sensitivity</div>
+        <h2>The geometry null is not an insensitive measurement</h2>
+      </div>
+      <div class="slide-no">11 / appendix</div>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <p class="muted">If formants never moved, a flat cycle result would not mean much. So I measured movements the same pipeline clearly detects inside the same recordings.</p>
+        <table>
+          <tr><th>Measure</th><th>Within speech</th><th>Across cycle</th></tr>
+          <tr><td>F1</td><td class="num">~184 Hz</td><td class="num">~1.8 Hz</td></tr>
+          <tr><td>F2</td><td class="num">~210 Hz</td><td class="num">~5.8 Hz</td></tr>
+        </table>
+      </div>
+      <div class="figure">
+        <img src="outputs/localization/figures/fig02_sensitivity_floor.png" alt="Sensitivity floor" />
+        <p class="caption">The measure resolves much larger formant shifts elsewhere but stays flat across the cycle.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Appendix &middot; phoneme residuals</div>
+        <h2>What survived after removing the global setting?</h2>
+      </div>
+      <div class="slide-no">12 / appendix</div>
+    </div>
+    <div class="content">
+      <div class="figure">
+        <img src="outputs/phoneme/figures/fig02_localization_forest.png" alt="Phoneme localization forest" />
+        <p class="caption">Open markers show class effects after removing the recording-wide offset.</p>
+      </div>
+      <div class="panel">
+        <ul class="bullets">
+          <li><strong>Diphthongs:</strong> extra H1-H2/open-quotient rise after de-meaning and F0 control, <span class="num">q = 0.023</span>.</li>
+          <li><strong>Nasals:</strong> extra MFCC2 timbre shift, consistent with nasal/upper-airway context, <span class="num">q = 0.049</span>.</li>
+          <li>These are mechanistically coherent but still single-subject leads.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Appendix &middot; PMDD context</div>
+        <h2>Why PMDD belongs in the story, but not as the headline</h2>
+      </div>
+      <div class="slide-no">13 / appendix</div>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <p class="muted">PMDD is not usually interpreted as abnormal hormone levels. It is sensitivity to normal hormonal change, especially around the progesterone/allopregnanolone pathway.</p>
+        <ul class="bullets">
+          <li>That makes the central/prosodic pathway biologically plausible enough to test.</li>
+          <li>I do not have daily symptom logs, so I cannot align voice changes to symptom severity.</li>
+          <li>The correct framing is motivation and directional context, not a diagnostic claim.</li>
+        </ul>
+      </div>
+      <div class="figure">
+        <img src="assets/presentation/widescan_instability_index.png" alt="Instability index by subphase" />
+        <p class="caption">Central/prosodic instability by sub-phase. Directional, not confirmatory.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="slide-head">
+      <div>
+        <div class="section">Appendix &middot; likely questions</div>
+        <h2>Short answers for discussion</h2>
+      </div>
+      <div class="slide-no">14 / appendix</div>
+    </div>
+    <div class="content equal">
+      <div class="evidence-stack">
+        <div class="mini-card"><div class="card-label">Is this generalizable?</div><h3>No, not yet.</h3><p>It is a single-subject exploratory analysis. The claim is about a within-person pattern and a method for testing it.</p></div>
+        <div class="mini-card"><div class="card-label">Could recording conditions explain it?</div><h3>Some timbre measures are vulnerable.</h3><p>That is why the story depends on drift control, within-cycle checks, phoneme de-meaning, and negative controls.</p></div>
+      </div>
+      <div class="evidence-stack">
+        <div class="mini-card"><div class="card-label">Why not focus on pitch?</div><h3>Mean F0 was comparatively stable.</h3><p>A tempting pitch-estrogen result weakened after date-drift control.</p></div>
+        <div class="mini-card"><div class="card-label">Why connected speech?</div><h3>It gives internal controls.</h3><p>A sustained vowel cannot separate a global setting from phoneme-structured change.</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="hint" id="hint">Arrow keys navigate. Use "Edit text" to click and revise slide copy.</div>
+<div class="chrome">
+  <div class="brand"><b>Decibelle</b> &nbsp;&middot;&nbsp; Voice + Cycle Tracking</div>
+  <div class="nav">
+    <button id="prev" aria-label="Previous">&#8249;</button>
+    <span class="counter"><span id="cur">1</span> / <span id="total">1</span></span>
+    <button id="next" aria-label="Next">&#8250;</button>
+  </div>
+</div>
+
+<script>
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var total = slides.length;
+  var progress = document.getElementById('progress');
+  var hint = document.getElementById('hint');
+  var curEl = document.getElementById('cur');
+  var totalEl = document.getElementById('total');
+  var editToggle = document.getElementById('editToggle');
+  var editStatus = document.getElementById('editStatus');
+  var exportBtn = document.getElementById('exportBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var storageKey = 'decibelle-presentation-edits-v3';
+  var editSelector = [
+    '.slide h1',
+    '.slide h2',
+    '.slide h3',
+    '.slide p',
+    '.slide li',
+    '.slide td',
+    '.slide th',
+    '.slide .section',
+    '.slide .thesis-label',
+    '.slide .callout-label',
+    '.slide .card-label',
+    '.slide .method-title',
+    '.slide .value',
+    '.slide .label',
+    '.slide .story-num'
+  ].join(',');
+  var editableNodes = Array.prototype.slice.call(document.querySelectorAll(editSelector));
+  var editMode = false;
+
+  totalEl.textContent = total;
+  editableNodes.forEach(function (node, index) {
+    node.setAttribute('data-edit-id', 'text-' + index);
+  });
+
+  function getEdits() {
+    try { return JSON.parse(localStorage.getItem(storageKey) || '{}'); }
+    catch (error) { return {}; }
+  }
+  function saveEdits(edits) {
+    localStorage.setItem(storageKey, JSON.stringify(edits));
+  }
+  function applyStoredEdits() {
+    var edits = getEdits();
+    editableNodes.forEach(function (node) {
+      var id = node.getAttribute('data-edit-id');
+      if (edits[id] !== undefined) node.innerHTML = edits[id];
+    });
+  }
+  function setEditMode(enabled) {
+    editMode = enabled;
+    document.body.classList.toggle('editing', editMode);
+    editableNodes.forEach(function (node) {
+      node.contentEditable = editMode ? 'true' : 'false';
+    });
+    editToggle.textContent = editMode ? 'Done editing' : 'Edit text';
+    editStatus.textContent = editMode ? 'Editing: changes auto-save in this browser' : 'View mode';
+  }
+
+  editableNodes.forEach(function (node) {
+    node.addEventListener('input', function () {
+      var edits = getEdits();
+      edits[node.getAttribute('data-edit-id')] = node.innerHTML;
+      saveEdits(edits);
+      editStatus.textContent = 'Saved in browser';
+    });
+  });
+
+  function show(n) {
+    i = Math.max(0, Math.min(total - 1, n));
+    slides.forEach(function (slide, index) {
+      slide.classList.toggle('active', index === i);
+    });
+    curEl.textContent = i + 1;
+    progress.style.width = ((i + 1) / total * 100) + '%';
+    if (i > 0 && hint) hint.style.display = 'none';
+  }
+  function next() { show(i + 1); }
+  function prev() { show(i - 1); }
+
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('prev').addEventListener('click', prev);
+  editToggle.addEventListener('click', function () { setEditMode(!editMode); });
+  resetBtn.addEventListener('click', function () {
+    if (!confirm('Reset browser-stored text edits for this deck?')) return;
+    localStorage.removeItem(storageKey);
+    window.location.reload();
+  });
+  exportBtn.addEventListener('click', function () {
+    var wasEditing = editMode;
+    setEditMode(false);
+    var clone = document.documentElement.cloneNode(true);
+    Array.prototype.slice.call(clone.querySelectorAll('[contenteditable], [data-edit-id]')).forEach(function (node) {
+      node.removeAttribute('contenteditable');
+      node.removeAttribute('data-edit-id');
+    });
+    clone.querySelector('.editbar') && clone.querySelector('.editbar').remove();
+    var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'presentation-edited.html';
+    link.click();
+    URL.revokeObjectURL(link.href);
+    setEditMode(wasEditing);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (editMode && event.target && event.target.isContentEditable) return;
+    if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+      event.preventDefault();
+      next();
+    } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+      event.preventDefault();
+      prev();
+    } else if (event.key === 'Home') {
+      show(0);
+    } else if (event.key === 'End') {
+      show(total - 1);
+    }
+  });
+  document.getElementById('deck').addEventListener('click', function (event) {
+    if (editMode) return;
+    if (event.target.closest('a') || event.target.closest('button')) return;
+    if (event.clientX > window.innerWidth * 0.5) next();
+    else prev();
+  });
+
+  applyStoredEdits();
+  setEditMode(false);
+  show(0);
+</script>
+</body>
+</html>
