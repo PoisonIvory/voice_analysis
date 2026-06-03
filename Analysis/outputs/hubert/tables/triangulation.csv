@@ -1,0 +1,5 @@
+description,dprime_feature,egemaps_feature,manner_subset,n_days,raw_rho,date_partial_rho
+composite d-prime vs global timbre setting,dprime_consonant_composite,segment_mfcc2_mean,all,53,0.221,0.107
+composite d-prime vs global open quotient,dprime_consonant_composite,segment_h1h2_mean,all,53,-0.056,-0.011
+voicing d-prime vs diphthong open quotient,dprime_voicing,segment_h1h2_mean,diphthong,53,0.054,-0.024
+nasality d-prime vs nasal timbre,dprime_nasality,segment_mfcc2_mean,nasal,53,-0.162,-0.139

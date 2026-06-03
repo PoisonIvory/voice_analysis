@@ -1,0 +1,93 @@
+{
+  "coverage": {
+    "backbones": [
+      "hubert-base",
+      "wav2vec2-base",
+      "wavlm-base"
+    ],
+    "recordings": 71,
+    "days": 53,
+    "date_min": "2025-09-25",
+    "date_max": "2026-03-26",
+    "hormone_overlap_days": 29,
+    "balanced_cycles": [
+      "2026-01-14",
+      "2026-02-12"
+    ],
+    "phase_balance_by_cycle_days": {
+      "2025-11-21": {
+        "follicular": 5,
+        "luteal": 1
+      },
+      "2025-12-18": {
+        "follicular": 0,
+        "luteal": 5
+      },
+      "2026-01-14": {
+        "follicular": 11,
+        "luteal": 8
+      },
+      "2026-02-12": {
+        "follicular": 6,
+        "luteal": 8
+      },
+      "2026-03-09": {
+        "follicular": 8,
+        "luteal": 0
+      }
+    },
+    "tokens_per_contrast": {
+      "nasality": {
+        "median": 35,
+        "min": 34,
+        "max": 35
+      },
+      "voicing": {
+        "median": 44,
+        "min": 43,
+        "max": 44
+      },
+      "sonorance": {
+        "median": 70,
+        "min": 69,
+        "max": 71
+      },
+      "stridency": {
+        "median": 21,
+        "min": 21,
+        "max": 21
+      },
+      "manner": {
+        "median": 45,
+        "min": 44,
+        "max": 46
+      },
+      "vowel_height": {
+        "median": 49,
+        "min": 49,
+        "max": 49
+      },
+      "vowel_lowness": {
+        "median": 49,
+        "min": 49,
+        "max": 49
+      },
+      "vowel_backness": {
+        "median": 29,
+        "min": 28,
+        "max": 29
+      }
+    }
+  },
+  "headline": {
+    "composite_cliffs_delta": -0.121,
+    "composite_magnitude": "negligible",
+    "composite_bh_q": 0.8359,
+    "n_usable_contrasts": 8,
+    "n_contrasts_bh_sig": 0,
+    "contrasts_bh_sig": [],
+    "inter_backbone_rho_min": 0.39,
+    "inter_backbone_rho_max": 0.75,
+    "profile_cosine_min": 0.959
+  }
+}

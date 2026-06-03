@@ -1,0 +1,28 @@
+feature,label,role,n_follicular_days,n_luteal_days,cliffs_delta,magnitude,mann_whitney_p,shift_jan_sd,shift_feb_sd,cycles_consistent,cycles_total,bh_q,backbone
+dprime_consonant_composite,Consonant composite (mean of 5),composite,30,22,-0.121,negligible,0.46440851156173857,-0.784,-0.153,3,3,0.8359353208111294,hubert-base
+dprime_nasality,Nasality (nasal vs oral stop),cycle_privileged,30,22,-0.218,small,0.18540304261276763,-0.68,-0.535,2,3,0.5562091278383029,hubert-base
+dprime_voicing,Voicing (obstruents),cycle_privileged,30,22,0.121,negligible,0.46440851156173857,0.402,0.53,2,3,0.8359353208111294,hubert-base
+dprime_sonorance,Sonorance (sonorant vs obstruent),other_consonant,30,22,-0.418,medium,0.010873658905202923,-1.042,-1.003,3,3,0.0978629301468263,hubert-base
+dprime_stridency,Stridency (sibilant vs non-sibilant),other_consonant,30,22,0.018,negligible,0.9188604018194434,-0.531,-0.046,2,3,0.9335751319397141,hubert-base
+dprime_manner,Manner (continuant: fricative vs stop),other_consonant,30,22,-0.036,negligible,0.8313273615369243,-0.197,0.026,2,3,0.9335751319397141,hubert-base
+dprime_vowel_height,Vowel height (high vs non-high),geometry_control,30,22,-0.358,medium,0.029532901080404763,-0.09,-1.526,3,3,0.13289805486182144,hubert-base
+dprime_vowel_lowness,Vowel lowness (low vs non-low),geometry_control,30,22,0.015,negligible,0.9335751319397141,-0.295,0.145,2,3,0.9335751319397141,hubert-base
+dprime_vowel_backness,Vowel backness (back vs front),geometry_control,30,22,-0.048,negligible,0.7740462669093678,-0.367,0.369,2,3,0.9335751319397141,hubert-base
+dprime_consonant_composite,Consonant composite (mean of 5),composite,30,22,-0.067,negligible,0.6904706520517735,0.494,-0.747,1,3,0.8025541897243599,wav2vec2-base
+dprime_nasality,Nasality (nasal vs oral stop),cycle_privileged,30,22,0.191,small,0.24702489370094982,0.435,0.375,3,3,0.8025541897243599,wav2vec2-base
+dprime_voicing,Voicing (obstruents),cycle_privileged,30,22,0.055,negligible,0.7458398751666326,-0.2,0.204,2,3,0.8025541897243599,wav2vec2-base
+dprime_sonorance,Sonorance (sonorant vs obstruent),other_consonant,30,22,-0.055,negligible,0.7458398751666326,0.607,-0.748,2,3,0.8025541897243599,wav2vec2-base
+dprime_stridency,Stridency (sibilant vs non-sibilant),other_consonant,30,22,-0.17,small,0.3039714410101455,-0.149,-0.624,3,3,0.8025541897243599,wav2vec2-base
+dprime_manner,Manner (continuant: fricative vs stop),other_consonant,30,22,-0.042,negligible,0.8025541897243599,0.505,-0.688,1,3,0.8025541897243599,wav2vec2-base
+dprime_vowel_height,Vowel height (high vs non-high),geometry_control,30,22,-0.273,small,0.0973797155219805,-0.793,-0.463,3,3,0.8025541897243599,wav2vec2-base
+dprime_vowel_lowness,Vowel lowness (low vs non-low),geometry_control,30,22,-0.073,negligible,0.6633738428845809,-0.056,-0.403,2,3,0.8025541897243599,wav2vec2-base
+dprime_vowel_backness,Vowel backness (back vs front),geometry_control,30,22,-0.124,negligible,0.45317723552095424,0.56,-0.125,1,3,0.8025541897243599,wav2vec2-base
+dprime_consonant_composite,Consonant composite (mean of 5),composite,30,22,-0.155,small,0.34961023234559596,-0.782,0.059,3,3,0.5244153485183939,wavlm-base
+dprime_nasality,Nasality (nasal vs oral stop),cycle_privileged,30,22,-0.267,small,0.10509309092442513,-0.897,-0.615,2,3,0.36590705518867206,wavlm-base
+dprime_voicing,Voicing (obstruents),cycle_privileged,30,22,0.255,small,0.12196901839622402,0.937,0.111,2,3,0.36590705518867206,wavlm-base
+dprime_sonorance,Sonorance (sonorant vs obstruent),other_consonant,30,22,-0.279,small,0.09012569122520317,-0.766,-0.319,3,3,0.36590705518867206,wavlm-base
+dprime_stridency,Stridency (sibilant vs non-sibilant),other_consonant,30,22,-0.036,negligible,0.8313273615369243,-0.556,0.174,2,3,0.9335751319397141,wavlm-base
+dprime_manner,Manner (continuant: fricative vs stop),other_consonant,30,22,0.015,negligible,0.9335751319397141,-0.269,0.218,1,3,0.9335751319397141,wavlm-base
+dprime_vowel_height,Vowel height (high vs non-high),geometry_control,30,22,-0.203,small,0.2180638995730263,0.492,-1.049,2,3,0.4584024499262128,wavlm-base
+dprime_vowel_lowness,Vowel lowness (low vs non-low),geometry_control,30,22,-0.109,negligible,0.5108465121363511,-0.563,-0.067,2,3,0.6568026584610228,wavlm-base
+dprime_vowel_backness,Vowel backness (back vs front),geometry_control,30,22,-0.188,small,0.2546680277367849,-0.605,-0.902,3,3,0.4584024499262128,wavlm-base

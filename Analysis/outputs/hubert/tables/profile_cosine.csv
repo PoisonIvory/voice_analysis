@@ -1,0 +1,4 @@
+backbone_a,backbone_b,profile_cosine
+hubert-base,wav2vec2-base,0.959
+hubert-base,wavlm-base,0.9972
+wav2vec2-base,wavlm-base,0.9761

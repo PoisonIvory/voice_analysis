@@ -1,0 +1,4 @@
+backbone_a,backbone_b,n,spearman_rho
+hubert-base,wav2vec2-base,71,0.419
+hubert-base,wavlm-base,71,0.75
+wav2vec2-base,wavlm-base,71,0.39
